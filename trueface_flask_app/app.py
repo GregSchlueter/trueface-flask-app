@@ -45,6 +45,14 @@ Please respond with the TF 2.0 evaluation including each category score with exp
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # ✅ Render-compliant dynamic port
-    app.run(host="0.0.0.0", port=port)
+    import sys
 
+    port = os.environ.get("PORT")
+    if port is None:
+        print("⚠️ PORT environment variable not set. Defaulting to 5000.", file=sys.stderr)
+        port = 5000
+    else:
+        print(f"✅ Render PORT detected: {port}", file=sys.stderr)
+        port = int(port)
+
+    app.run(host="0.0.0.0", port=port)
