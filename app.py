@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify
 import openai
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 @app.route("/evaluate", methods=["POST"])
@@ -45,3 +47,4 @@ Please respond with the TF 2.0 evaluation including each category score with exp
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # ✅ Render-compliant dynamic port
     app.run(host="0.0.0.0", port=port)
+
