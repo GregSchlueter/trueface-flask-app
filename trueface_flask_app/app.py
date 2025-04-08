@@ -1,23 +1,30 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, redirect
 from flask_cors import CORS
 from openai import OpenAI
 import os
 import logging
 
+# Initialize Flask app
 app = Flask(__name__)
 
-# ✅ TEMP: Allow all origins for testing
+# Enable CORS for all origins (you can tighten this later if needed)
 CORS(app, supports_credentials=True)
 
-# ✅ OpenAI client
+# ✅ HTTPS Redirect Middleware
+@app.before_request
+def redirect_to_https():
+    if not request.is_secure and not request.host.startswith('localhost'):
+        return redirect(request.url.replace("http://", "https://"), code=301)
+
+# ✅ OpenAI API setup
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# ✅ Root route for health check
+# ✅ Root health check
 @app.route("/", methods=["GET"])
 def index():
     return jsonify({"status": "✅ TrueFace backend is live!"})
 
-# ✅ Evaluation route
+# ✅ Evaluation endpoint
 @app.route("/evaluate", methods=["POST"])
 def evaluate():
     try:
@@ -57,7 +64,7 @@ Please respond with the TF 2.0 evaluation including each category score with exp
         logging.exception("Internal server error during evaluation:")
         return jsonify({"error": "Internal server error. Please try again later."}), 500
 
-# ✅ Render dynamic port
+# ✅ Render dynamic port binding
 if __name__ == "__main__":
     import sys
     port = os.environ.get("PORT")
