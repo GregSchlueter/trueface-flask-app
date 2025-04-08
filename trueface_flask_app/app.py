@@ -44,7 +44,7 @@ def evaluate():
         """
 
         # Call OpenAI's GPT model to get the evaluation using the new API method
-        response = openai.Completion.create(
+        response = openai.completions.create(
             model="gpt-3.5-turbo",  # Or use your preferred model (e.g., GPT-4)
             prompt=prompt,
             max_tokens=300,
