@@ -9,6 +9,11 @@ CORS(app, origins=["https://truefaceworld.com"])  # Allow frontend origin
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+    organization="Greg Schlueter"  # ← replace with your real org ID
+)
+
 @app.route("/evaluate", methods=["POST"])
 def evaluate():
     try:
@@ -37,8 +42,8 @@ Please respond with the TF 2.0 evaluation including each category score with exp
 """
 
         print("🧠 Sending request to OpenAI...")
-        response = client.chat.completions.create(
-            model="gpt-4",
+       response = client.chat.completions.create(
+    model="gpt-4-turbo",
             messages=[
                 {"role": "system", "content": "You are an impartial AI that evaluates online comments using the TrueFace 2.0 model."},
                 {"role": "user", "content": prompt}
