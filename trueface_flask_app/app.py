@@ -5,19 +5,22 @@ import os
 import traceback
 
 app = Flask(__name__)
-CORS(app, origins=["https://truefaceworld.com"])  # ✅ Allow frontend domain
+CORS(app, origins=["https://truefaceworld.com"])  # Allow frontend origin
 
-# ✅ Initialize OpenAI client for v1.0+
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route("/evaluate", methods=["POST"])
 def evaluate():
     try:
+        print("✅ Received request to /evaluate")
         data = request.get_json()
+        print(f"📥 Payload: {data}")
+
         comment = data.get("comment")
         context = data.get("context", "")
 
         if not comment:
+            print("⚠️ Missing 'comment' in request.")
             return jsonify({"error": "Comment is required."}), 400
 
         prompt = f"""
@@ -33,6 +36,7 @@ Context:
 Please respond with the TF 2.0 evaluation including each category score with explanation, Topical Consideration, and Total Score.
 """
 
+        print("🧠 Sending request to OpenAI...")
         response = client.chat.completions.create(
             model="gpt-4",
             messages=[
@@ -43,14 +47,13 @@ Please respond with the TF 2.0 evaluation including each category score with exp
         )
 
         reply = response.choices[0].message.content.strip()
+        print("✅ OpenAI responded successfully.")
         return jsonify({"evaluation": reply})
 
-except Exception as e:
-    import sys
-    print("🔥 FULL ERROR TRACEBACK:", file=sys.stderr)
-    traceback.print_exc(file=sys.stderr)
-    return jsonify({"error": f"Internal server error: {str(e)}"}), 500
-
+    except Exception as e:
+        print("🔥 FULL ERROR TRACEBACK:")
+        traceback.print_exc()
+        return jsonify({"error": f"Internal server error: {str(e)}"}), 500
 
 if __name__ == "__main__":
     import sys
