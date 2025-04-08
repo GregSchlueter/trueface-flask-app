@@ -43,13 +43,15 @@ def evaluate():
         Total Score: Summary and final score.
         """
 
-        # Use the correct API call for OpenAI v1.0+ to evaluate the comment (chat models use v1/chat/completions)
-        response = openai.ChatCompletion.create(
+        # Call OpenAI's GPT model using the correct method for chat models
+        response = openai.completions.create(
             model="gpt-3.5-turbo",  # Or use your preferred model (e.g., GPT-4)
             messages=[
-                {"role": "system", "content": "You are an AI model that helps to evaluate comments based on truth, clarity, and dignity."},
+                {"role": "system", "content": "You are an impartial AI that evaluates online comments based on truth, clarity, and human dignity."},
                 {"role": "user", "content": prompt}
-            ]
+            ],
+            max_tokens=500,  # Increase token count if necessary
+            temperature=0.5
         )
 
         # Extract the generated evaluation from the OpenAI response
