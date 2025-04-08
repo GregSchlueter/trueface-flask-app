@@ -11,6 +11,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/png" />
   <style>
+    /* General Styles */
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
@@ -83,14 +84,32 @@
       width: 32px;
       height: 32px;
     }
+
+    /* Mobile Styles */
+    @media (max-width: 600px) {
+      body {
+        padding: 20px;
+      }
+      .container {
+        padding: 15px;
+      }
+      h1 {
+        font-size: 24px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Header / Intro Section -->
     <div style="text-align: center; margin-bottom: 20px;">
       <img src="{{ url_for('static', filename='TrueFace3.png') }}" alt="TrueFace Logo" style="max-width: 250px;">
     </div>
     <h1>TrueFace 2.0 Evaluation</h1>
+    <p style="text-align: center;">TrueFace 2.0 is a unique, nonpartisan tool that evaluates the quality of public comments online, grounded in logic, truth, and human dignity. Our mission is to elevate the quality of dialogue by promoting constructive and respectful conversation.</p>
+    <p style="text-align: center;">Simply paste the comment you’d like to evaluate, and TrueFace will assess it across five core categories: Reasoning, Tone, Engagement, Impact, and Truth Alignment.</p>
+
+    <!-- Evaluation Form -->
     <form id="evaluationForm">
       <label for="comment">Comment for Evaluation:</label>
       <textarea id="comment" name="comment" rows="6" placeholder="Paste the comment you want evaluated..."></textarea>
@@ -100,6 +119,8 @@
 
       <input type="submit" value="Submit for Evaluation">
     </form>
+
+    <!-- Evaluation Result -->
     <div id="evaluationResult" class="result"></div>
     <button id="copyButton">Copy to Clipboard</button>
   </div>
@@ -112,6 +133,7 @@
     </p>
   </div>
 
+  <!-- Social Media Share Buttons -->
   <div class="social-icons">
     <a href="https://www.facebook.com/sharer/sharer.php?u=https://truefaceworld.com" target="_blank" title="Share on Facebook">
       <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/facebook.svg" alt="Facebook">
