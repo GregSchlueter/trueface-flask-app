@@ -43,8 +43,8 @@ def evaluate():
         Total Score: Summary and final score.
         """
 
-        # Call OpenAI's GPT model to get the evaluation
-        response = openai.chat_completions.create(
+        # Call OpenAI's GPT model to get the evaluation using the correct method
+        response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",  # Or use your preferred model (e.g., GPT-4)
             messages=[
                 {"role": "system", "content": "You are an AI model that helps to evaluate comments based on truth, clarity, and dignity."},
