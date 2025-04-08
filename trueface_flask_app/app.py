@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, redirect
+from flask import Flask, request, jsonify, redirect, render_template
 from flask_cors import CORS
 import os
 import traceback
@@ -21,12 +21,12 @@ except Exception as e:
     traceback.print_exc()
     client = None
 
-# ✅ Root health check
+# ✅ Serve homepage from index.html
 @app.route("/", methods=["GET"])
 def index():
-    return jsonify({"status": "✅ TrueFace backend is live!"})
+    return render_template("index.html")
 
-# ✅ Evaluate route with guard
+# ✅ Evaluate route with error handling
 @app.route("/evaluate", methods=["POST"])
 def evaluate():
     if not client:
