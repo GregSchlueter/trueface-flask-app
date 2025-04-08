@@ -44,14 +44,16 @@ def evaluate():
         """
 
         # Call OpenAI's GPT model to get the evaluation
-        response = openai.Completion.create(
-            model="text-davinci-003",  # Or use your preferred model (e.g., GPT-4)
-            prompt=prompt,
-            max_tokens=300
+        response = openai.chat_completions.create(
+            model="gpt-3.5-turbo",  # Or use your preferred model (e.g., GPT-4)
+            messages=[
+                {"role": "system", "content": "You are an AI model that helps to evaluate comments based on truth, clarity, and dignity."},
+                {"role": "user", "content": prompt}
+            ]
         )
 
         # Extract the generated evaluation from the OpenAI response
-        reply = response.choices[0].text.strip()
+        reply = response['choices'][0]['message']['content'].strip()
 
         # Return the evaluation as a JSON response
         return jsonify({"evaluation": reply})
