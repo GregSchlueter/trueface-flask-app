@@ -3,6 +3,7 @@ services:
     name: trueface-backend
     env: python
     plan: free
+    rootDir: trueface_flask_app
     buildCommand: "pip install -r requirements.txt"
     startCommand: "python app.py"
     envVars:
