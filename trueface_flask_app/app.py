@@ -1,13 +1,9 @@
 from flask import Flask, request, jsonify, redirect
 from flask_cors import CORS
-from openai import OpenAI
 import os
-import logging
+import traceback
 
-# Initialize Flask app
 app = Flask(__name__)
-
-# Enable CORS for all origins (you can tighten this later if needed)
 CORS(app, supports_credentials=True)
 
 # ✅ HTTPS Redirect Middleware
@@ -16,17 +12,25 @@ def redirect_to_https():
     if not request.is_secure and not request.host.startswith('localhost'):
         return redirect(request.url.replace("http://", "https://"), code=301)
 
-# ✅ OpenAI API setup
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# ✅ OpenAI Setup with Error Handling
+try:
+    from openai import OpenAI
+    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+except Exception as e:
+    print("❌ Failed to initialize OpenAI client:", str(e))
+    traceback.print_exc()
+    client = None
 
 # ✅ Root health check
 @app.route("/", methods=["GET"])
 def index():
     return jsonify({"status": "✅ TrueFace backend is live!"})
 
-# ✅ Evaluation endpoint
+# ✅ Evaluate route with guard
 @app.route("/evaluate", methods=["POST"])
 def evaluate():
+    if not client:
+        return jsonify({"error": "OpenAI client not initialized."}), 500
     try:
         data = request.get_json()
         comment = data.get("comment")
@@ -61,8 +65,8 @@ Please respond with the TF 2.0 evaluation including each category score with exp
         return jsonify({"evaluation": reply})
 
     except Exception as e:
-        logging.exception("Internal server error during evaluation:")
-        return jsonify({"error": "Internal server error. Please try again later."}), 500
+        traceback.print_exc()
+        return jsonify({"error": f"Internal server error: {str(e)}"}), 500
 
 # ✅ Render dynamic port binding
 if __name__ == "__main__":
