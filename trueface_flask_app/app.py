@@ -5,27 +5,18 @@ import os
 import traceback
 
 app = Flask(__name__)
-CORS(app, origins=["https://truefaceworld.com"])  # Allow frontend origin
+CORS(app, supports_credentials=True, origins=["https://truefaceworld.com", "https://www.truefaceworld.com"])
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-
-client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"),
-    organization="Greg Schlueter"  # ← replace with your real org ID
-)
 
 @app.route("/evaluate", methods=["POST"])
 def evaluate():
     try:
-        print("✅ Received request to /evaluate")
         data = request.get_json()
-        print(f"📥 Payload: {data}")
-
         comment = data.get("comment")
         context = data.get("context", "")
 
         if not comment:
-            print("⚠️ Missing 'comment' in request.")
             return jsonify({"error": "Comment is required."}), 400
 
         prompt = f"""
@@ -41,9 +32,8 @@ Context:
 Please respond with the TF 2.0 evaluation including each category score with explanation, Topical Consideration, and Total Score.
 """
 
-        print("🧠 Sending request to OpenAI...")
-       response = client.chat.completions.create(
-    model="gpt-4-turbo",
+        response = client.chat.completions.create(
+            model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are an impartial AI that evaluates online comments using the TrueFace 2.0 model."},
                 {"role": "user", "content": prompt}
@@ -52,11 +42,9 @@ Please respond with the TF 2.0 evaluation including each category score with exp
         )
 
         reply = response.choices[0].message.content.strip()
-        print("✅ OpenAI responded successfully.")
         return jsonify({"evaluation": reply})
 
     except Exception as e:
-        print("🔥 FULL ERROR TRACEBACK:")
         traceback.print_exc()
         return jsonify({"error": f"Internal server error: {str(e)}"}), 500
 
