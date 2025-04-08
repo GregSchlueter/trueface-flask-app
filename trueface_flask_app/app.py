@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 import openai
 import os
@@ -8,6 +8,11 @@ CORS(app)
 
 # Ensure your OPENAI_API_KEY is set as an environment variable
 openai.api_key = os.getenv("OPENAI_API_KEY")
+
+@app.route("/")
+def index():
+    # Serve the homepage (index.html)
+    return render_template('index.html')  # Ensure 'index.html' exists in your 'templates' folder
 
 @app.route("/evaluate", methods=["POST"])
 def evaluate():
