@@ -43,7 +43,7 @@ def evaluate():
         Total Score: Summary and final score.
         """
 
-        # Call OpenAI's GPT model using the correct method for chat models
+        # Call OpenAI's GPT model using the correct method for chat models (with the messages structure)
         response = openai.completions.create(
             model="gpt-3.5-turbo",  # Or use your preferred model (e.g., GPT-4)
             messages=[
