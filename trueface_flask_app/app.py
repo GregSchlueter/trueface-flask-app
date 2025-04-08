@@ -1,82 +1,60 @@
-from flask import Flask, request, jsonify, redirect, render_template
+from flask import Flask, request, jsonify
 from flask_cors import CORS
+import openai
 import os
-import traceback
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app)
 
-# ✅ HTTPS Redirect Middleware
-@app.before_request
-def redirect_to_https():
-    if not request.is_secure and not request.host.startswith('localhost'):
-        return redirect(request.url.replace("http://", "https://"), code=301)
+# Ensure your OPENAI_API_KEY is set as an environment variable
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# ✅ OpenAI Setup with Error Handling
-try:
-    from openai import OpenAI
-    client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-except Exception as e:
-    print("❌ Failed to initialize OpenAI client:", str(e))
-    traceback.print_exc()
-    client = None
-
-# ✅ Serve homepage from index.html
-@app.route("/", methods=["GET"])
-def index():
-    return render_template("index.html")
-
-# ✅ Evaluate route with error handling
 @app.route("/evaluate", methods=["POST"])
 def evaluate():
-    if not client:
-        return jsonify({"error": "OpenAI client not initialized."}), 500
     try:
+        # Retrieve the comment and context from the JSON request body
         data = request.get_json()
         comment = data.get("comment")
         context = data.get("context", "")
 
+        # If no comment is provided, return an error
         if not comment:
             return jsonify({"error": "Comment is required."}), 400
 
+        # Construct the prompt for OpenAI to evaluate the comment in TF 2.0 format
         prompt = f"""
-Below is a TrueFace 2.0 evaluation of a comment.
-TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity. Grounded in classical reasoning, social psychology, ethical philosophy, and communication science, TrueFace evaluates public comments across five core categories—reasoning, tone, engagement, impact, and truth alignment. Each is rated from 0 to 5. A higher score reflects a greater contribution to truthful, respectful, and constructive dialogue across differences.
+        Below is a TrueFace evaluation of your comment. TrueFace is an AI model designed to promote truth, clarity, and human dignity in public conversation.
 
-Comment (excerpt):
-{comment}
+        Comment:
+        {comment}
 
-Context:
-{context}
+        Evaluation (0–5 scale per category):
+        Reasoning:
+        Tone:
+        Engagement:
+        Impact:
+        Truth Alignment:
+        Topical Consideration:
+        Total Score: Summary and final score.
+        """
 
-Please respond with the TF 2.0 evaluation including each category score with explanation, Topical Consideration, and Total Score.
-"""
-
-        response = client.chat.completions.create(
-            model="gpt-4-turbo",
-            messages=[
-                {"role": "system", "content": "You are an impartial AI that evaluates online comments using the TrueFace 2.0 model."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.3
+        # Call OpenAI's GPT model to get the evaluation
+        response = openai.Completion.create(
+            model="text-davinci-003",  # Or use your preferred model (e.g., GPT-4)
+            prompt=prompt,
+            max_tokens=300
         )
 
-        reply = response.choices[0].message.content.strip()
+        # Extract the generated evaluation from the OpenAI response
+        reply = response.choices[0].text.strip()
+
+        # Return the evaluation as a JSON response
         return jsonify({"evaluation": reply})
 
     except Exception as e:
-        traceback.print_exc()
-        return jsonify({"error": f"Internal server error: {str(e)}"}), 500
+        # If any errors occur, return the error message
+        return jsonify({"error": str(e)}), 500
 
-# ✅ Render dynamic port binding
 if __name__ == "__main__":
-    import sys
-    port = os.environ.get("PORT")
-    if port is None:
-        print("⚠️ PORT environment variable not set. Defaulting to 5000.", file=sys.stderr)
-        port = 5000
-    else:
-        print(f"✅ Render PORT detected: {port}", file=sys.stderr)
-        port = int(port)
-
-    app.run(host="0.0.0.0", port=port)
+    # Run the Flask app on the default host and port
+    app.run(host="0.0.0.0", port=5000)
