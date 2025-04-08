@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TrueFace 2.0 Evaluation Portal</title>
   <meta property="og:title" content="TrueFace | Reveal the Real" />
   <meta property="og:description" content="Online social media comment evaluator based on truth, logic, and human dignity." />
-  <meta property="og:image" content="https://truefaceworld.com/TrueFace3.png" />
+  <meta property="og:image" content="https://truefaceworld.com/static/TrueFace3.png" />
   <meta property="og:url" content="https://truefaceworld.com" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="icon" href="favicon.png" type="image/png">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/png" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -88,7 +88,7 @@
 <body>
   <div class="container">
     <div style="text-align: center; margin-bottom: 20px;">
-      <img src="TrueFace3.png" alt="TrueFace Logo" style="max-width: 250px;">
+      <img src="{{ url_for('static', filename='TrueFace3.png') }}" alt="TrueFace Logo" style="max-width: 250px;">
     </div>
     <h1>TrueFace 2.0 Evaluation</h1>
     <form id="evaluationForm">
@@ -142,7 +142,7 @@
       copyButton.style.display = 'none';
 
       try {
-        const res = await fetch('https://trueface-flask-app-1.onrender.com/evaluate', {
+        const res = await fetch('/evaluate', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -152,7 +152,7 @@
 
         const data = await res.json();
         if (data.evaluation) {
-          resultDiv.textContent = Below is a TrueFace 2.0 evaluation of your comment.\n\nTrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity. Grounded in classical reasoning, social psychology, ethical philosophy, and communication science.\n\nTrueFace evaluates public comments across five core categories—reasoning, tone, engagement, impact, and truth alignment. Each is rated from 0 to 5. A higher score reflects a greater contribution to truthful, respectful, and constructive dialogue across differences.\n\nLearn more or submit your own at: https://TrueFaceWorld.com\n\n${data.evaluation};
+          resultDiv.textContent = `Below is a TrueFace 2.0 evaluation of your comment.\n\n${data.evaluation}`;
           copyButton.style.display = 'inline-block';
         } else {
           resultDiv.textContent = 'Error: ' + (data.error || 'Unexpected error.');

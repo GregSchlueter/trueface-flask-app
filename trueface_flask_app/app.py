@@ -53,7 +53,7 @@ Please respond with the TF 2.0 evaluation including each category score with exp
 """
 
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4-turbo",
             messages=[
                 {"role": "system", "content": "You are an impartial AI that evaluates online comments using the TrueFace 2.0 model."},
                 {"role": "user", "content": prompt}
