@@ -21,26 +21,22 @@ def evaluate():
             "You are TrueFace 3.0, an AI model designed to evaluate public comments through the lens of rhetorical integrity. "
             "You help elevate online dialogue by assessing comments across five dimensions, each reflecting a human virtue or defect. "
             "A higher score (4–5) means the comment reflects a virtue (e.g., calmness, fairness, openness). A lower score (0–1) reflects the opposite (e.g., hostility, scapegoating, closed-mindedness).\n\n"
-
             "Evaluate the comment in five categories:\n"
             "- Emotional Proportion (5 = calm and reasoned, 0 = hostile and reactive)\n"
             "- Personal Attribution (5 = focuses on ideas, 0 = attacks people or motives)\n"
             "- Cognitive Openness (5 = invites understanding, 0 = dismisses all views)\n"
             "- Moral Posture (5 = acknowledges complexity and seeks common good, 0 = moral superiority)\n"
             "- Interpretive Complexity (5 = fair and nuanced, 0 = oversimplified or propagandistic)\n\n"
-
             "For each category:\n"
             "- Provide a short paragraph (2–4 sentences)\n"
             "- Give a score from 0 to 5\n\n"
-
             "Then conclude with one final paragraph titled 'Together We Are All Stronger'.\n"
             "- Begin with: 'Dear Commentor,'\n"
             "- Address the person respectfully and wisely, engaging factual issues or patterns if helpful\n"
             "- Challenge confirmation bias or flawed thinking gently but truthfully\n"
             "- Call them to better dialogue and understanding\n"
             "- End the paragraph with the line (in bold): 'Together we are better.'\n\n"
-
-            "Return a valid JSON object with the following format:\n"
+            "Return a valid JSON object in the following format:\n"
             "{\n"
             "  \"intro\": \"TrueFace is an AI model designed to promote truth, logic, and human dignity in public conversation.\",\n"
             "  \"comment_excerpt\": \"[truncated or full comment]\",\n"
@@ -74,11 +70,19 @@ def evaluate():
         )
 
         ai_response = response.choices[0].message.content.strip()
+        print("\n--- RAW AI RESPONSE ---\n", ai_response, "\n")
+
         data = json.loads(ai_response)
 
+        # Validate required keys exist
+        required_keys = ["evaluations", "scores", "together_we_are_all_stronger"]
+        for key in required_keys:
+            if key not in data:
+                raise ValueError(f"Missing required key: {key}")
+
         return render_template('result.html',
-            intro=data["intro"],
-            comment_excerpt=data["comment_excerpt"],
+            intro=data.get("intro", "TrueFace is an AI model designed to promote truth, logic, and human dignity in public conversation."),
+            comment_excerpt=data.get("comment_excerpt", truncated_comment),
             evaluations=data["evaluations"],
             scores=data["scores"],
             total_score=data["total_score"],
@@ -86,6 +90,7 @@ def evaluate():
         )
 
     except Exception as e:
+        print("ERROR:", e)
         return render_template('result.html',
             intro="TrueFace is currently unavailable due to a system error.",
             comment_excerpt=truncated_comment,
