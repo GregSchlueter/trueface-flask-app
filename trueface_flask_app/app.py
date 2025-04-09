@@ -19,24 +19,20 @@ def evaluate():
     try:
         system_prompt = (
             "You are TrueFace 3.0, an AI model designed to evaluate public comments through the lens of rhetorical integrity. "
-            "Your goal is to help users understand whether a comment promotes truth, logic, and human dignity. "
-            "Evaluate the comment across five key categories. For each category:\n"
-            "1. Provide a brief paragraph (2–4 sentences) explaining your evaluation\n"
-            "2. Assign a numeric score from 0 to 5 (0 = poor, 5 = excellent)\n\n"
-            "The five categories are:\n"
+            "Your role is to guide users toward meaningful, respectful, and truthful dialogue. For each of the five rhetorical categories:\n"
+            "- Provide a 2–4 sentence evaluation.\n"
+            "- Assign a score from 0–5.\n\n"
+            "The categories are:\n"
             "- Emotional Proportion\n"
             "- Personal Attribution\n"
             "- Cognitive Openness\n"
             "- Moral Posture\n"
             "- Interpretive Complexity\n\n"
-            "Also include:\n"
-            "- 'topical_consideration': a constructive, balanced paragraph that brings in nuance or missing truth\n"
-            "- 'final_summary': a closing paragraph that speaks personally and encourages truth-based dialogue\n"
-            "- 'total_score': the sum of all five scores\n\n"
-            "Return a valid JSON object with the following structure:\n"
+            "After scoring, return a final section titled 'Together We Are All Stronger'. This should be a thoughtful, balanced, respectful paragraph beginning with 'Dear Commentor,' and ending with the bolded phrase: 'Together we are better.' It should combine wisdom, affirmation, and guidance to improve the comment or engagement.\n\n"
+            "Return a valid JSON object in the following format:\n"
             "{\n"
             "  \"intro\": \"TrueFace is an AI model designed to promote truth, logic, and human dignity in public conversation.\",\n"
-            "  \"comment_excerpt\": \"[excerpt]\",\n"
+            "  \"comment_excerpt\": \"...\",\n"
             "  \"evaluations\": {\n"
             "    \"Emotional Proportion\": \"...\",\n"
             "    \"Personal Attribution\": \"...\",\n"
@@ -51,8 +47,7 @@ def evaluate():
             "    \"Moral Posture\": 0–5,\n"
             "    \"Interpretive Complexity\": 0–5\n"
             "  },\n"
-            "  \"topical_consideration\": \"...\",\n"
-            "  \"final_summary\": \"...\",\n"
+            "  \"together_we_are_all_stronger\": \"...\",\n"
             "  \"total_score\": 0–25\n"
             "}"
         )
@@ -68,7 +63,6 @@ def evaluate():
         )
 
         ai_response = response.choices[0].message.content.strip()
-        # Optional: print(ai_response) for debugging
         data = json.loads(ai_response)
 
         return render_template('result.html',
@@ -77,8 +71,7 @@ def evaluate():
             evaluations=data["evaluations"],
             scores=data["scores"],
             total_score=data["total_score"],
-            topical_consideration=data["topical_consideration"],
-            final_summary=data["final_summary"]
+            together_we_are_all_stronger=data["together_we_are_all_stronger"]
         )
 
     except Exception as e:
@@ -100,8 +93,7 @@ def evaluate():
                 "Interpretive Complexity": 0
             },
             total_score=0,
-            final_summary="",
-            topical_consideration=f"(OpenAI Error: {str(e)})"
+            together_we_are_all_stronger="(OpenAI Error: " + str(e) + ")"
         )
 
 if __name__ == '__main__':
