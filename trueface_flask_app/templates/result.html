@@ -44,6 +44,12 @@
       margin-top: 25px;
     }
 
+    .score-line {
+      font-size: 1.15em;
+      font-weight: bold;
+      margin-top: 30px;
+    }
+
     .copy-btn {
       display: block;
       margin: 40px auto 20px;
@@ -59,9 +65,9 @@
     .footer {
       text-align: center;
       font-weight: bold;
-      margin-top: 50px;
-      font-size: 1.05em;
-      color: #222;
+      margin-top: 60px;
+      font-size: 1.15em;
+      color: #111;
     }
 
     .footer a {
@@ -70,12 +76,12 @@
     }
 
     .social-icons {
-      margin-top: 10px;
-      font-size: 1.4em;
+      margin-top: 15px;
+      font-size: 1.6em;
     }
 
     .social-icons a {
-      margin: 0 10px;
+      margin: 0 12px;
       color: #333;
     }
 
@@ -99,13 +105,16 @@
   </div>
 
   <div class="section">
+    {% set icons = {
+      "Clarity & Reasoning": "🧠",
+      "Tone & Virtue": "💬",
+      "Engagement Quality": "🤝",
+      "Community Impact": "🌍",
+      "Truthfulness & Alignment": "🔍"
+    } %}
     {% for category, content in evaluations.items() %}
-      <div class="category">
-        {% if category == "Clarity & Reasoning" %}🧠{% elif category == "Tone & Virtue" %}💬
-        {% elif category == "Engagement Quality" %}🤝{% elif category == "Community Impact" %}🌍
-        {% elif category == "Truthfulness & Alignment" %}🔍{% endif %}
-        {{ category }} — {{ loop.index }}/5
-      </div>
+      {% set score = content.split("Score: ")[1].split(")")[0] if "Score:" in content else "?" %}
+      <div class="category">{{ icons[category] }} {{ category }} Score: {{ score }}/5</div>
       <p>{{ content.split('(Score')[0].strip() }}</p>
     {% endfor %}
   </div>
@@ -116,12 +125,8 @@
   </div>
 
   <div class="section">
-    <div class="section-title">🧾 Final Summary</div>
+    <div class="section-title">🧾 Final Summary Score: {{ total_score }}/25</div>
     <p>{{ final_summary }}</p>
-  </div>
-
-  <div class="section">
-    <strong>Total Score:</strong> {{ total_score }} / 25
   </div>
 
   <button class="copy-btn" onclick="copyEvaluation()">Copy Evaluation</button>
@@ -145,7 +150,7 @@ Below is a TrueFace evaluation of your comment. TrueFace is an AI model designed
 Comment (excerpt): {{ comment_excerpt }}
 
 {% for category, content in evaluations.items() %}
-{{ category }} — {{ loop.index }}/5
+{{ category }} Score: {{ content.split("Score: ")[1].split(")")[0] }}/5
 {{ content.split('(Score')[0].strip() }}
 
 {% endfor %}
