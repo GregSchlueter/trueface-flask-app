@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 import openai
 import os
@@ -8,11 +8,6 @@ CORS(app)
 
 # Ensure your OPENAI_API_KEY is set as an environment variable
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
-@app.route("/")
-def index():
-    # Serve the homepage (index.html)
-    return render_template('index.html')  # Ensure 'index.html' exists in your 'templates' folder
 
 @app.route("/evaluate", methods=["POST"])
 def evaluate():
@@ -43,16 +38,18 @@ def evaluate():
         Total Score: Summary and final score.
         """
 
-        # Call OpenAI's GPT model using the correct method (Completion)
-        response = openai.Completion.create(
-            model="text-davinci-003",  # Or use your preferred model (e.g., GPT-4)
-            prompt=prompt,
-            max_tokens=500,  # Increase token count if necessary
-            temperature=0.5
+        # Call OpenAI's GPT model using the ChatCompletion method
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo",  # You can use gpt-4 if it's available to you
+            messages=[
+                {"role": "system", "content": "You are an impartial AI that evaluates online comments using the TrueFace 2.0 model."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3
         )
 
         # Extract the generated evaluation from the OpenAI response
-        reply = response['choices'][0]['text'].strip()
+        reply = response['choices'][0]['message']['content'].strip()
 
         # Return the evaluation as a JSON response
         return jsonify({"evaluation": reply})
