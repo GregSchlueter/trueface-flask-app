@@ -18,58 +18,62 @@ def evaluate():
 
     try:
         prompt = (
-            "You are an evaluation model. Analyze the following comment and return a JSON object "
-            "containing 'scores' (with each of the five categories as keys: Reasoning, Tone, Engagement, "
-            "Impact, Truth Alignment), each with a score (0–5) and a one-line explanation. Also return a "
-            "'total_summary' and a 'topical_consideration'.\n\n"
-            f"Context: {context}\nComment: {comment}\n\n"
-            "Respond ONLY with a JSON object in this format:\n\n"
+            "You are TrueFace, an AI designed to evaluate public comments using a rigorous framework grounded "
+            "in classical reasoning, social psychology, ethics, and communication science.\n\n"
+            "Given the following comment and context, respond with a JSON object using this structure:\n\n"
             "{\n"
-            "  \"scores\": {\n"
-            "    \"Reasoning\": {\"score\": 4, \"explanation\": \"...\"},\n"
-            "    \"Tone\": {\"score\": 3, \"explanation\": \"...\"},\n"
-            "    ...\n"
+            "  \"intro\": \"[1-paragraph summary of what TrueFace is]\",\n"
+            "  \"comment_excerpt\": \"[shortened comment]\",\n"
+            "  \"evaluations\": {\n"
+            "    \"Clarity & Reasoning\": \"[paragraph-style analysis]\",\n"
+            "    \"Tone & Virtue\": \"[paragraph-style analysis]\",\n"
+            "    \"Engagement Quality\": \"[paragraph-style analysis]\",\n"
+            "    \"Community Impact\": \"[paragraph-style analysis]\",\n"
+            "    \"Truthfulness & Alignment\": \"[paragraph-style analysis]\"\n"
             "  },\n"
-            "  \"total_summary\": \"...\",\n"
-            "  \"topical_consideration\": \"...\"\n"
+            "  \"topical_consideration\": \"[insightful paragraph connecting the comment to the broader issue]\",\n"
+            "  \"total_score\": 0–25,\n"
+            "  \"final_summary\": \"[summary paragraph offering reflection and improvement]\"\n"
             "}"
         )
+
+        full_input = f"Context: {context}\nComment: {comment}"
 
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a precise evaluator of public discourse."},
-                {"role": "user", "content": prompt}
+                {"role": "system", "content": prompt},
+                {"role": "user", "content": full_input}
             ]
         )
 
         ai_text = response.choices[0].message.content.strip()
-
-        # Parse AI's JSON response
         data = json.loads(ai_text)
 
-        scores = {k: v["score"] for k, v in data["scores"].items()}
-        explanations = {k: v["explanation"] for k, v in data["scores"].items()}
-        total_summary = data["total_summary"]
-        topical_consideration = data["topical_consideration"]
-        total_score = sum(scores.values())
+        return render_template('result.html',
+            intro=data["intro"],
+            comment_excerpt=data["comment_excerpt"],
+            evaluations=data["evaluations"],
+            total_score=data["total_score"],
+            final_summary=data["final_summary"],
+            topical_consideration=data["topical_consideration"]
+        )
 
     except Exception as e:
-        scores = {cat: 2 for cat in ['Reasoning', 'Tone', 'Engagement', 'Impact', 'Truth Alignment']}
-        explanations = {cat: "Evaluation unavailable due to system error." for cat in scores}
-        total_score = sum(scores.values())
-        total_summary = "Due to a temporary system error, fallback scores were applied."
-        topical_consideration = f"(OpenAI Error: {str(e)})"
-
-    return render_template('result.html',
-        truncated_comment=truncated_comment,
-        context=context,
-        scores=scores,
-        explanations=explanations,
-        total_score=total_score,
-        total_summary=total_summary,
-        topical_consideration=topical_consideration
-    )
+        return render_template('result.html',
+            intro="TrueFace is currently unavailable due to a system error.",
+            comment_excerpt=truncated_comment,
+            evaluations={
+                "Clarity & Reasoning": "System error. Please try again later.",
+                "Tone & Virtue": "System error.",
+                "Engagement Quality": "System error.",
+                "Community Impact": "System error.",
+                "Truthfulness & Alignment": "System error."
+            },
+            total_score=0,
+            final_summary="We were unable to generate a full evaluation at this time.",
+            topical_consideration=f"(OpenAI Error: {str(e)})"
+        )
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
