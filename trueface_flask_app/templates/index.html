@@ -2,88 +2,159 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TrueFace 2.0</title>
+  <title>TrueFace 2.0 Evaluation</title>
   <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
   <style>
     body {
-      font-family: 'Segoe UI', Roboto, sans-serif;
-      background-color: #f5f7fa;
-      color: #222;
-      text-align: center;
-      padding: 50px 20px;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f4f8;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
     }
 
-    img.logo {
-      width: 384px;
+    .container {
+      background: #fff;
+      max-width: 800px;
+      width: 100%;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      width: 120px;
+      margin: 0 auto 10px auto;
+      display: block;
+    }
+
+    .tagline {
+      text-align: center;
+      font-size: 1em;
+      color: #0077cc;
+      font-weight: bold;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2em;
       margin-bottom: 10px;
     }
 
     .intro {
-      font-size: 1.2em;
-      margin: 10px auto 40px auto;
-      font-weight: 500;
+      text-align: center;
+      font-size: 1.1em;
+      color: #333;
+      margin-bottom: 30px;
     }
 
-    form {
-      max-width: 700px;
-      margin: 0 auto;
-      text-align: left;
-    }
-
-    label {
-      font-weight: bold;
+    form label {
       display: block;
-      margin: 25px 0 5px;
+      font-weight: bold;
+      margin: 15px 0 5px;
     }
 
     textarea {
       width: 100%;
-      padding: 12px;
       border: 1px solid #ccc;
       border-radius: 6px;
+      padding: 10px;
       font-size: 1em;
-      font-family: inherit;
+      resize: vertical;
     }
 
     .submit-btn {
+      display: block;
+      width: 100%;
       margin-top: 30px;
-      padding: 12px 30px;
-      background-color: #002d72;
+      background-color: #0056d2;
       color: white;
       border: none;
-      border-radius: 6px;
+      padding: 12px;
       font-size: 1.1em;
+      border-radius: 6px;
       cursor: pointer;
     }
 
+    .submit-btn:hover {
+      background-color: #003fa0;
+    }
+
     .footer {
-      margin-top: 60px;
-      font-weight: bold;
-      font-size: 1em;
+      margin-top: 40px;
+      text-align: center;
+      font-size: 0.95em;
       color: #333;
     }
+
+    .footer a {
+      color: #0056d2;
+      text-decoration: none;
+    }
+
+    .social-icons {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .social-icons a {
+      margin: 0 10px;
+      font-size: 1.5em;
+      color: #333;
+      text-decoration: none;
+    }
+
+    .error-box {
+      background-color: #e0efff;
+      color: #003366;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 25px;
+      font-size: 0.95em;
+    }
+
   </style>
 </head>
 <body>
+  <div class="container">
+    <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace Logo" class="logo">
+    <div class="tagline">TrueFaceWorld.com</div>
 
-  <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace Logo" class="logo">
-  <div class="intro">
-    TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.
+    <h1>TrueFace 2.0 Evaluation</h1>
+    <div class="intro">
+      TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.
+    </div>
+
+    <form action="/evaluate" method="POST">
+      <label for="comment">Comment for Evaluation:</label>
+      <textarea name="comment" rows="5" required placeholder="Paste the comment you’d like to evaluate..."></textarea>
+
+      <label for="context">Original Comment (for Context):</label>
+      <textarea name="context" rows="3" placeholder="Paste the comment this is replying to..."></textarea>
+
+      <button class="submit-btn" type="submit">Submit for Evaluation</button>
+    </form>
+
+    {% if error %}
+      <div class="error-box">
+        <strong>Error:</strong><br>
+        {{ error }}
+      </div>
+    {% endif %}
+
+    <div class="footer">
+      TrueFace is going to revolutionize the quality of human relationships through social media.<br>
+      Please share your feedback and/or contact us for investment opportunities: <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a>
+
+      <div class="social-icons">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://truefaceworld.com" target="_blank">📘</a>
+        <a href="https://twitter.com/intent/tweet?text=Check%20out%20TrueFaceWorld.com" target="_blank">🐦</a>
+        <a href="https://www.instagram.com/" target="_blank">📷</a>
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://truefaceworld.com" target="_blank">💼</a>
+      </div>
+    </div>
   </div>
-
-  <form action="/evaluate" method="POST">
-    <label for="comment">Comment to Evaluate:</label>
-    <textarea name="comment" rows="5" required></textarea>
-
-    <label for="context">Context (optional):</label>
-    <textarea name="context" rows="3"></textarea>
-
-    <input class="submit-btn" type="submit" value="Evaluate">
-  </form>
-
-  <div class="footer">
-    Want to help us revolutionize social media or explore investment opportunities? Revolution@TrueFaceWorld.com
-  </div>
-
 </body>
 </html>
