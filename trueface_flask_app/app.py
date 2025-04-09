@@ -1,11 +1,8 @@
 from flask import Flask, render_template, request
 from openai import OpenAI
 import os
-import random
 
 app = Flask(__name__, static_folder='static')
-
-# Set up OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route('/')
@@ -16,7 +13,7 @@ def index():
 def evaluate():
     comment = request.form['comment']
     context = request.form['context']
-    truncated_comment = (comment[:80] + '...') if len(comment) > 80 else comment
+    truncated_comment = f'"{comment[:80]}..."' if len(comment) > 80 else f'"{comment}"'
 
     try:
         prompt = (
@@ -29,7 +26,7 @@ def evaluate():
             "Engagement: [score] - [explanation]\n"
             "Impact: [score] - [explanation]\n"
             "Truth Alignment: [score] - [explanation]\n"
-            "Total Summary: [summary paragraph]\n"
+            "Total Summary: [summary]\n"
             "Topical Consideration: [insightful reflection]"
         )
 
@@ -42,22 +39,33 @@ def evaluate():
         )
 
         ai_text = response.choices[0].message.content.strip()
-
-        # Very basic parsing (to be improved later with regex or structured output)
         lines = ai_text.split('\n')
+
         scores = {}
         explanations = {}
+        total_summary = ""
+        topical_consideration = ""
 
         for line in lines:
             if ':' in line and '-' in line:
-                category, rest = line.split(':', 1)
-                score, explanation = rest.strip().split('-', 1)
-                scores[category.strip()] = int(score.strip())
-                explanations[category.strip()] = explanation.strip()
+                try:
+                    category, rest = line.split(':', 1)
+                    score_part, explanation = rest.strip().split('-', 1)
+                    score = int(score_part.strip())
+                    scores[category.strip()] = score
+                    explanations[category.strip()] = explanation.strip()
+                except:
+                    continue
             elif line.startswith("Total Summary:"):
                 total_summary = line.replace("Total Summary:", "").strip()
             elif line.startswith("Topical Consideration:"):
                 topical_consideration = line.replace("Topical Consideration:", "").strip()
+
+        # Fallback if AI doesn't provide all five
+        for cat in ['Reasoning', 'Tone', 'Engagement', 'Impact', 'Truth Alignment']:
+            if cat not in scores:
+                scores[cat] = 2
+                explanations[cat] = "AI did not return a valid explanation."
 
         total_score = sum(scores.values())
 
