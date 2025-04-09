@@ -1,12 +1,12 @@
 from flask import Flask, render_template, request
-import openai
+from openai import OpenAI
 import os
 import random
 
 app = Flask(__name__, static_folder='static')
 
-# Set your OpenAI API key (use environment variable or insert directly)
-openai.api_key = os.getenv("OPENAI_API_KEY")  # Or set manually for local testing
+# Set up OpenAI client
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 @app.route('/')
 def index():
@@ -16,59 +16,65 @@ def index():
 def evaluate():
     comment = request.form['comment']
     context = request.form['context']
-
-    # Truncate comment for display
     truncated_comment = (comment[:80] + '...') if len(comment) > 80 else comment
 
-    # Create ChatCompletion request to OpenAI
     try:
-        response = openai.ChatCompletion.create(
+        prompt = (
+            "Evaluate the following user comment in five categories on a scale from 0 to 5. "
+            "Provide a one-line explanation for each category. Then provide a one-paragraph total summary and a topical consideration.\n\n"
+            f"Context: {context}\nComment: {comment}\n\n"
+            "Respond in the following format:\n"
+            "Reasoning: [score] - [explanation]\n"
+            "Tone: [score] - [explanation]\n"
+            "Engagement: [score] - [explanation]\n"
+            "Impact: [score] - [explanation]\n"
+            "Truth Alignment: [score] - [explanation]\n"
+            "Total Summary: [summary paragraph]\n"
+            "Topical Consideration: [insightful reflection]"
+        )
+
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "You are TrueFace, a helpful, precise evaluator of online comments. "
-                        "You rate them from 0–5 in 5 categories: Reasoning, Tone, Engagement, Impact, and Truth Alignment. "
-                        "You also generate a 2–3 sentence Topical Consideration to provide thoughtful insight."
-                    )
-                },
-                {
-                    "role": "user",
-                    "content": f"Context: {context}\nComment: {comment}"
-                }
+                {"role": "system", "content": "You are a precise evaluator of public discourse."},
+                {"role": "user", "content": prompt}
             ]
         )
 
-        ai_reply = response.choices[0].message.content
+        ai_text = response.choices[0].message.content.strip()
 
-        # Basic parsing of AI reply (in production, use structured output)
-        scores = {
-            'Reasoning': random.randint(3, 5),
-            'Tone': random.randint(3, 5),
-            'Engagement': random.randint(3, 5),
-            'Impact': random.randint(3, 5),
-            'Truth Alignment': random.randint(3, 5)
-        }
+        # Very basic parsing (to be improved later with regex or structured output)
+        lines = ai_text.split('\n')
+        scores = {}
+        explanations = {}
 
-        topical_consideration = ai_reply  # For now, treat entire reply as topical output
+        for line in lines:
+            if ':' in line and '-' in line:
+                category, rest = line.split(':', 1)
+                score, explanation = rest.strip().split('-', 1)
+                scores[category.strip()] = int(score.strip())
+                explanations[category.strip()] = explanation.strip()
+            elif line.startswith("Total Summary:"):
+                total_summary = line.replace("Total Summary:", "").strip()
+            elif line.startswith("Topical Consideration:"):
+                topical_consideration = line.replace("Topical Consideration:", "").strip()
+
+        total_score = sum(scores.values())
 
     except Exception as e:
-        scores = {
-            'Reasoning': 2,
-            'Tone': 2,
-            'Engagement': 2,
-            'Impact': 2,
-            'Truth Alignment': 2
-        }
-        topical_consideration = f"(AI error occurred: {str(e)}) Fallback scores applied."
-
-    total_score = sum(scores.values())
+        scores = {cat: 2 for cat in ['Reasoning', 'Tone', 'Engagement', 'Impact', 'Truth Alignment']}
+        explanations = {cat: "Evaluation unavailable due to system error." for cat in scores}
+        total_score = sum(scores.values())
+        total_summary = "Due to a temporary system error, fallback scores were applied."
+        topical_consideration = f"(OpenAI Error: {str(e)})"
 
     return render_template('result.html',
         truncated_comment=truncated_comment,
+        context=context,
         scores=scores,
+        explanations=explanations,
         total_score=total_score,
+        total_summary=total_summary,
         topical_consideration=topical_consideration
     )
 
