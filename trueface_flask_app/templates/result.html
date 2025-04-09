@@ -15,22 +15,28 @@
 
         img {
             width: 150px;
-            margin-bottom: 20px;
-        }
-
-        h1 {
             margin-bottom: 10px;
         }
 
-        .score-table {
+        h1 {
+            margin: 0 0 10px 0;
+        }
+
+        .section {
             margin: 30px auto;
+            width: 80%;
+            text-align: left;
+        }
+
+        .score-table {
+            width: 100%;
             border-collapse: collapse;
-            width: 60%;
+            margin-top: 20px;
         }
 
         .score-table th, .score-table td {
             border: 1px solid #ccc;
-            padding: 10px;
+            padding: 12px;
         }
 
         .score-table th {
@@ -38,15 +44,39 @@
         }
 
         .final-score {
-            font-size: 1.4em;
+            font-size: 1.3em;
             font-weight: bold;
             margin-top: 30px;
         }
 
+        .button-row {
+            margin: 25px 0;
+        }
+
+        .copy-btn {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .copy-btn:hover {
+            background-color: #003f88;
+        }
+
+        .social-icons a {
+            margin: 0 10px;
+            text-decoration: none;
+            font-size: 1.4em;
+        }
+
         .footer {
-            margin-top: 40px;
+            margin-top: 50px;
             font-style: italic;
-            color: #666;
+            color: #555;
         }
     </style>
 </head>
@@ -54,34 +84,75 @@
 
     <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace Logo">
     <h1>TrueFace 2.0 Evaluation</h1>
-
     <p><strong>Below is a TrueFace evaluation of your comment. TrueFace is an AI model designed to promote truth, clarity, and human dignity in public conversation.</strong></p>
 
-    <p><strong>Comment:</strong> {{ truncated_comment }}</p>
+    <div class="section">
+        <p><strong>Comment:</strong> {{ truncated_comment }}</p>
+        {% if context %}
+        <p><strong>Context:</strong> {{ context }}</p>
+        {% endif %}
+    </div>
 
-    <table class="score-table">
-        <tr>
-            <th>Category</th>
-            <th>Score (0-5)</th>
-        </tr>
-        {% for category, score in scores.items() %}
-        <tr>
-            <td>{{ category }}</td>
-            <td>{{ score }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="section">
+        <table class="score-table">
+            <tr>
+                <th>Category</th>
+                <th>Score (0–5)</th>
+                <th>Explanation</th>
+            </tr>
+            {% for category, score in scores.items() %}
+            <tr>
+                <td>{{ category }}</td>
+                <td>{{ score }}</td>
+                <td>{{ explanations[category] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
 
-    <p class="final-score">Total Score: {{ total_score }} / 25</p>
+        <p class="final-score">Total Score: {{ total_score }} / 25</p>
+        <p><strong>Summary:</strong> {{ total_summary }}</p>
+    </div>
 
-    <div>
+    <div class="section">
         <h3>Topical Consideration</h3>
         <p>{{ topical_consideration }}</p>
+    </div>
+
+    <div class="button-row">
+        <button class="copy-btn" onclick="copyEvaluation()">Copy Evaluation</button>
+    </div>
+
+    <div class="social-icons">
+        <a href="https://twitter.com/intent/tweet?text=Check%20out%20TrueFaceWorld.com" target="_blank">X</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://truefaceworld.com" target="_blank">Facebook</a>
+        <a href="https://www.instagram.com/" target="_blank">Instagram</a>
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://truefaceworld.com" target="_blank">LinkedIn</a>
     </div>
 
     <div class="footer">
         <p>Evaluate comments in your social world: <a href="https://truefaceworld.com">TrueFaceWorld.com</a> — "Reveal the Real."</p>
     </div>
+
+    <script>
+        function copyEvaluation() {
+            const text = `
+TrueFace 2.0 Evaluation
+Comment: {{ truncated_comment }}
+{% if context %}Context: {{ context }}{% endif %}
+
+{% for category, score in scores.items() %}
+{{ category }} – {{ score }}: {{ explanations[category] }}
+{% endfor %}
+
+Total Score: {{ total_score }} / 25
+Summary: {{ total_summary }}
+Topical Consideration: {{ topical_consideration }}
+https://truefaceworld.com — "Reveal the Real."
+`;
+            navigator.clipboard.writeText(text);
+            alert("Evaluation copied to clipboard!");
+        }
+    </script>
 
 </body>
 </html>
