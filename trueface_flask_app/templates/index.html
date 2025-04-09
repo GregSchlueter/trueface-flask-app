@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>TrueFace 2.0 Evaluation</title>
   <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -24,7 +25,7 @@
     }
 
     .logo {
-      width: 120px;
+      width: 384px;
       margin: 0 auto 10px auto;
       display: block;
     }
@@ -78,10 +79,6 @@
       cursor: pointer;
     }
 
-    .submit-btn:hover {
-      background-color: #003fa0;
-    }
-
     .footer {
       margin-top: 40px;
       text-align: center;
@@ -100,21 +97,10 @@
     }
 
     .social-icons a {
-      margin: 0 10px;
+      margin: 0 12px;
       font-size: 1.5em;
       color: #333;
-      text-decoration: none;
     }
-
-    .error-box {
-      background-color: #e0efff;
-      color: #003366;
-      padding: 15px;
-      border-radius: 8px;
-      margin-top: 25px;
-      font-size: 0.95em;
-    }
-
   </style>
 </head>
 <body>
@@ -131,28 +117,20 @@
       <label for="comment">Comment for Evaluation:</label>
       <textarea name="comment" rows="5" required placeholder="Paste the comment you’d like to evaluate..."></textarea>
 
-      <label for="context">Original Comment (for Context):</label>
-      <textarea name="context" rows="3" placeholder="Paste the comment this is replying to..."></textarea>
+      <label for="context">Original Comment (Context – optional):</label>
+      <textarea name="context" rows="3" placeholder="Paste the comment this is replying to (optional)..."></textarea>
 
       <button class="submit-btn" type="submit">Submit for Evaluation</button>
     </form>
 
-    {% if error %}
-      <div class="error-box">
-        <strong>Error:</strong><br>
-        {{ error }}
-      </div>
-    {% endif %}
-
     <div class="footer">
-      TrueFace is going to revolutionize the quality of human relationships through social media.<br>
-      Please share your feedback and/or contact us for investment opportunities: <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a>
-
+      Want to help us revolutionize social media or explore investment opportunities?<br>
+      <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a>
       <div class="social-icons">
-        <a href="https://www.facebook.com/sharer/sharer.php?u=https://truefaceworld.com" target="_blank">📘</a>
-        <a href="https://twitter.com/intent/tweet?text=Check%20out%20TrueFaceWorld.com" target="_blank">🐦</a>
-        <a href="https://www.instagram.com/" target="_blank">📷</a>
-        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://truefaceworld.com" target="_blank">💼</a>
+        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a href="https://twitter.com" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
       </div>
     </div>
   </div>
