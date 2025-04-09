@@ -69,16 +69,25 @@ def evaluate():
             ]
         )
 
-        ai_response = response.choices[0].message.content.strip()
+        raw_output = response.choices[0].message.content
+        print("\n--- RAW GPT OUTPUT ---\n", raw_output, "\n")
 
-        # DEBUG: Print and save full GPT response
-        print("\n--- RAW AI RESPONSE ---\n", ai_response, "\n")
-        with open("last_gpt_response.json", "w", encoding="utf-8") as f:
-            f.write(ai_response)
+        if not raw_output:
+            raise ValueError("GPT returned an empty response.")
 
+        ai_response = raw_output.strip()
+
+        # Save to local file if possible (for local debugging)
+        try:
+            with open("last_gpt_response.json", "w", encoding="utf-8") as f:
+                f.write(ai_response)
+        except:
+            pass  # Ignore if on Render
+
+        # Parse GPT response as JSON
         data = json.loads(ai_response)
 
-        # Validate all expected keys are present
+        # Validate structure
         required_main_keys = ["evaluations", "scores", "together_we_are_all_stronger"]
         for key in required_main_keys:
             if key not in data:
@@ -91,10 +100,9 @@ def evaluate():
             "Moral Posture",
             "Interpretive Complexity"
         ]
-
         for key in required_subkeys:
             if key not in data["evaluations"] or key not in data["scores"]:
-                raise ValueError(f"Missing subkey: {key}")
+                raise ValueError(f"Missing category: {key}")
 
         return render_template('result.html',
             intro=data.get("intro", "TrueFace is an AI model designed to promote truth, logic, and human dignity in public conversation."),
