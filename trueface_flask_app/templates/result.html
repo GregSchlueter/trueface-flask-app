@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TrueFace 2.0 Evaluation</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f9fc;
+            padding: 40px;
+            text-align: center;
+        }
+
+        img {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .score-table {
+            margin: 30px auto;
+            border-collapse: collapse;
+            width: 60%;
+        }
+
+        .score-table th, .score-table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        .score-table th {
+            background-color: #e9ecef;
+        }
+
+        .final-score {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-top: 30px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            font-style: italic;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+    <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace Logo">
+    <h1>TrueFace 2.0 Evaluation</h1>
+
+    <p><strong>Below is a TrueFace evaluation of your comment. TrueFace is an AI model designed to promote truth, clarity, and human dignity in public conversation.</strong></p>
+
+    <p><strong>Comment:</strong> {{ truncated_comment }}</p>
+
+    <table class="score-table">
+        <tr>
+            <th>Category</th>
+            <th>Score (0-5)</th>
+        </tr>
+        {% for category, score in scores.items() %}
+        <tr>
+            <td>{{ category }}</td>
+            <td>{{ score }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p class="final-score">Total Score: {{ total_score }} / 25</p>
+
+    <div>
+        <h3>Topical Consideration</h3>
+        <p>{{ topical_consideration }}</p>
+    </div>
+
+    <div class="footer">
+        <p>Evaluate comments in your social world: <a href="https://truefaceworld.com">TrueFaceWorld.com</a> — "Reveal the Real."</p>
+    </div>
+
+</body>
+</html>
