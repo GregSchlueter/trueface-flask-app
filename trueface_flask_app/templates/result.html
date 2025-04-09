@@ -17,14 +17,14 @@
 
     .container {
       background: #fff;
-      max-width: 900px;
+      max-width: 850px;
       width: 100%;
       padding: 40px;
-      border-radius: 10px;
+      border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
-    img.logo {
+    .logo {
       width: 384px;
       display: block;
       margin: 0 auto 10px;
@@ -38,8 +38,9 @@
 
     .intro {
       text-align: center;
-      font-size: 1.2em;
+      font-size: 1.1em;
       font-weight: bold;
+      color: #0056d2;
       margin-bottom: 30px;
     }
 
@@ -47,16 +48,22 @@
       margin-bottom: 30px;
     }
 
-    .category {
+    .category-title {
       font-weight: bold;
       font-size: 1.15em;
-      margin-top: 25px;
+      margin-top: 20px;
+    }
+
+    .section-title {
+      font-size: 1.15em;
+      font-weight: bold;
+      margin-top: 30px;
     }
 
     .copy-btn {
       display: block;
       margin: 40px auto 20px;
-      padding: 10px 20px;
+      padding: 12px 24px;
       font-size: 1em;
       background-color: #002d72;
       color: white;
@@ -69,7 +76,7 @@
       text-align: center;
       font-weight: bold;
       margin-top: 50px;
-      font-size: 1.15em;
+      font-size: 1.1em;
       color: #222;
     }
 
@@ -84,14 +91,8 @@
     }
 
     .social-icons a {
-      margin: 0 10px;
+      margin: 0 12px;
       color: #333;
-    }
-
-    .section-title {
-      font-size: 1.15em;
-      font-weight: bold;
-      margin-top: 30px;
     }
   </style>
 </head>
@@ -108,24 +109,24 @@
     </div>
 
     <div class="section">
-      <div class="category">🧠 Emotional Proportion: {{ scores['Emotional Proportion'] }}/5</div>
+      <div class="category-title">🧠 Emotional Proportion: {{ scores['Emotional Proportion'] }}/5</div>
       <p>{{ evaluations['Emotional Proportion'] }}</p>
 
-      <div class="category">🎯 Personal Attribution: {{ scores['Personal Attribution'] }}/5</div>
+      <div class="category-title">🎯 Personal Attribution: {{ scores['Personal Attribution'] }}/5</div>
       <p>{{ evaluations['Personal Attribution'] }}</p>
 
-      <div class="category">🧩 Cognitive Openness: {{ scores['Cognitive Openness'] }}/5</div>
+      <div class="category-title">🧩 Cognitive Openness: {{ scores['Cognitive Openness'] }}/5</div>
       <p>{{ evaluations['Cognitive Openness'] }}</p>
 
-      <div class="category">❤️ Moral Posture: {{ scores['Moral Posture'] }}/5</div>
+      <div class="category-title">❤️ Moral Posture: {{ scores['Moral Posture'] }}/5</div>
       <p>{{ evaluations['Moral Posture'] }}</p>
 
-      <div class="category">🔍 Interpretive Complexity: {{ scores['Interpretive Complexity'] }}/5</div>
+      <div class="category-title">🔍 Interpretive Complexity: {{ scores['Interpretive Complexity'] }}/5</div>
       <p>{{ evaluations['Interpretive Complexity'] }}</p>
     </div>
 
     <div class="section">
-      <div class="section-title">📌 Topical Consideration</div>
+      <div class="section-title">🌿 Together We Can All Be Better</div>
       <p>{{ topical_consideration }}</p>
     </div>
 
@@ -170,7 +171,7 @@ Comment (excerpt): {{ comment_excerpt }}
 🔍 Interpretive Complexity: {{ scores['Interpretive Complexity'] }}/5
 {{ evaluations['Interpretive Complexity'] }}
 
-📌 Topical Consideration:
+🌿 Together We Can All Be Better:
 {{ topical_consideration }}
 
 🧾 Final Summary:
