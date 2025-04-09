@@ -7,12 +7,21 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
-      font-family: 'Georgia', serif;
-      background-color: #fdfdfd;
-      padding: 40px;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f2f4f8;
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      background: #fff;
       max-width: 900px;
-      margin: auto;
-      color: #222;
+      width: 100%;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
     }
 
     img.logo {
@@ -60,7 +69,7 @@
       text-align: center;
       font-weight: bold;
       margin-top: 50px;
-      font-size: 1.1em;
+      font-size: 1.15em;
       color: #222;
     }
 
@@ -87,54 +96,55 @@
   </style>
 </head>
 <body>
+  <div class="container">
+    <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" class="logo">
+    <h1>TrueFace 3.0 Evaluation</h1>
+    <div class="intro">
+      TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.
+    </div>
 
-  <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" class="logo">
-  <h1>TrueFace 3.0 Evaluation</h1>
-  <div class="intro">
-    TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.
-  </div>
+    <div class="section">
+      <p><strong>Comment (excerpt):</strong> {{ comment_excerpt }}</p>
+    </div>
 
-  <div class="section">
-    <p><strong>Comment (excerpt):</strong> {{ comment_excerpt }}</p>
-  </div>
+    <div class="section">
+      <div class="category">🧠 Emotional Proportion: {{ scores['Emotional Proportion'] }}/5</div>
+      <p>{{ evaluations['Emotional Proportion'] }}</p>
 
-  <div class="section">
-    <div class="category">🧠 Emotional Proportion Score: {{ scores['Emotional Proportion'] }}/5</div>
-    <p>{{ evaluations['Emotional Proportion'] }}</p>
+      <div class="category">🎯 Personal Attribution: {{ scores['Personal Attribution'] }}/5</div>
+      <p>{{ evaluations['Personal Attribution'] }}</p>
 
-    <div class="category">🎯 Personal Attribution Score: {{ scores['Personal Attribution'] }}/5</div>
-    <p>{{ evaluations['Personal Attribution'] }}</p>
+      <div class="category">🧩 Cognitive Openness: {{ scores['Cognitive Openness'] }}/5</div>
+      <p>{{ evaluations['Cognitive Openness'] }}</p>
 
-    <div class="category">🧩 Cognitive Openness Score: {{ scores['Cognitive Openness'] }}/5</div>
-    <p>{{ evaluations['Cognitive Openness'] }}</p>
+      <div class="category">❤️ Moral Posture: {{ scores['Moral Posture'] }}/5</div>
+      <p>{{ evaluations['Moral Posture'] }}</p>
 
-    <div class="category">❤️ Moral Posture Score: {{ scores['Moral Posture'] }}/5</div>
-    <p>{{ evaluations['Moral Posture'] }}</p>
+      <div class="category">🔍 Interpretive Complexity: {{ scores['Interpretive Complexity'] }}/5</div>
+      <p>{{ evaluations['Interpretive Complexity'] }}</p>
+    </div>
 
-    <div class="category">🔍 Interpretive Complexity Score: {{ scores['Interpretive Complexity'] }}/5</div>
-    <p>{{ evaluations['Interpretive Complexity'] }}</p>
-  </div>
+    <div class="section">
+      <div class="section-title">📌 Topical Consideration</div>
+      <p>{{ topical_consideration }}</p>
+    </div>
 
-  <div class="section">
-    <div class="section-title">📌 Topical Consideration</div>
-    <p>{{ topical_consideration }}</p>
-  </div>
+    <div class="section">
+      <div class="section-title">🧾 Final Summary Score: {{ total_score }}/25</div>
+      <p>{{ final_summary }}</p>
+    </div>
 
-  <div class="section">
-    <div class="section-title">🧾 Final Summary Score: {{ total_score }}/25</div>
-    <p>{{ final_summary }}</p>
-  </div>
+    <button class="copy-btn" onclick="copyEvaluation()">Copy Evaluation</button>
 
-  <button class="copy-btn" onclick="copyEvaluation()">Copy Evaluation</button>
-
-  <div class="footer">
-    Want to help us revolutionize social media or explore investment opportunities?<br>
-    <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a>
-    <div class="social-icons">
-      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
-      <a href="https://twitter.com" target="_blank"><i class="fab fa-x-twitter"></i></a>
-      <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+    <div class="footer">
+      Want to help us revolutionize social media or explore investment opportunities?<br>
+      <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a>
+      <div class="social-icons">
+        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+        <a href="https://twitter.com" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+      </div>
     </div>
   </div>
 
@@ -145,19 +155,19 @@ Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model desi
 
 Comment (excerpt): {{ comment_excerpt }}
 
-🧠 Emotional Proportion Score: {{ scores['Emotional Proportion'] }}/5
+🧠 Emotional Proportion: {{ scores['Emotional Proportion'] }}/5
 {{ evaluations['Emotional Proportion'] }}
 
-🎯 Personal Attribution Score: {{ scores['Personal Attribution'] }}/5
+🎯 Personal Attribution: {{ scores['Personal Attribution'] }}/5
 {{ evaluations['Personal Attribution'] }}
 
-🧩 Cognitive Openness Score: {{ scores['Cognitive Openness'] }}/5
+🧩 Cognitive Openness: {{ scores['Cognitive Openness'] }}/5
 {{ evaluations['Cognitive Openness'] }}
 
-❤️ Moral Posture Score: {{ scores['Moral Posture'] }}/5
+❤️ Moral Posture: {{ scores['Moral Posture'] }}/5
 {{ evaluations['Moral Posture'] }}
 
-🔍 Interpretive Complexity Score: {{ scores['Interpretive Complexity'] }}/5
+🔍 Interpretive Complexity: {{ scores['Interpretive Complexity'] }}/5
 {{ evaluations['Interpretive Complexity'] }}
 
 📌 Topical Consideration:
@@ -175,6 +185,5 @@ Revolution@TrueFaceWorld.com
       alert("Evaluation copied to clipboard!");
     }
   </script>
-
 </body>
 </html>
