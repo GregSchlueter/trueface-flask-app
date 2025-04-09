@@ -60,11 +60,6 @@
       margin-top: 30px;
     }
 
-    .score-display {
-      font-size: 1.1em;
-      margin-bottom: 8px;
-    }
-
     .copy-btn {
       display: block;
       margin: 40px auto 20px;
@@ -132,7 +127,9 @@
 
     <div class="section">
       <div class="section-title">🌿 Together We Can All Be Better</div>
-      <p>{{ topical_consideration }} {{ final_summary }}</p>
+      <p><strong>Dear Commentor,</strong><br><br>
+      {{ topical_consideration }} {{ final_summary }}
+      <br><br><strong>Together we are better.</strong></p>
     </div>
 
     <div class="section">
@@ -176,8 +173,11 @@ Comment (excerpt): {{ comment_excerpt }}
 {{ evaluations['Interpretive Complexity'] }}
 
 🌿 Together We Can All Be Better:
-{{ topical_consideration }}
-{{ final_summary }}
+Dear Commenter,
+
+{{ topical_consideration }} {{ final_summary }}
+
+**Together we are better.**
 
 Total Score: {{ total_score }}/25
 
