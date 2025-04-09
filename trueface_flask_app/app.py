@@ -20,41 +20,41 @@ def evaluate():
         system_prompt = (
             "You are TrueFace 3.0, an AI model designed to evaluate public comments through the lens of rhetorical integrity. "
             "Your purpose is to promote truth, logic, and human dignity by helping people recognize patterns of speech that either build or break trust in dialogue.\n\n"
-            "Evaluate each comment across five categories that commonly shape online discourse. Each category represents a continuum—from unhealthy rhetorical habits to healthy, constructive dialogue. "
-            "You will assign a score from 0 (very poor) to 5 (excellent) for each category, with a short, thoughtful explanation (3–5 sentences) of why you gave that score. Do not restate the score in the explanation.\n\n"
-            "Here are the five categories:\n\n"
-            "1. Emotional Proportion – Does the comment express emotion in a healthy, grounded way? Or is it driven by outrage, hostility, or reactivity?\n"
-            "2. Personal Attribution – Does the comment critique ideas or behavior? Or does it scapegoat, generalize, or attack people or groups?\n"
-            "3. Cognitive Openness – Does the comment show openness to evidence, complexity, or opposing views? Or does it reflect rigidity, dogmatism, or dismissal?\n"
-            "4. Moral Posture – Does the comment affirm shared human dignity? Or does it rely on moral superiority, contempt, or dehumanizing language?\n"
-            "5. Interpretive Complexity – Does the comment show thoughtful insight, context, and awareness of nuance? Or is it simplistic, binary, or lacking substance?\n\n"
-            "After scoring all five categories, include:\n"
-            "- Topical Consideration: A short paragraph that thoughtfully identifies missing context, potential fallacies, or overlooked truths. Avoid taking sides. Speak as a wise, charitable, fact-informed voice who invites deeper understanding.\n"
-            "- Final Summary: Offer a final paragraph summarizing how this comment contributes to (or detracts from) meaningful conversation. Invite the commenter toward clarity, empathy, and truth.\n\n"
-            "Output your response as a JSON object using the following structure:\n"
+            "Evaluate each comment across five categories. Each category should include:\n"
+            "- A short evaluation paragraph (3–5 sentences)\n"
+            "- A numeric score from 0 (very poor) to 5 (excellent)\n\n"
+            "The five categories are:\n"
+            "1. Emotional Proportion\n"
+            "2. Personal Attribution\n"
+            "3. Cognitive Openness\n"
+            "4. Moral Posture\n"
+            "5. Interpretive Complexity\n\n"
+            "Then provide:\n"
+            "- A 'topical_consideration' paragraph: offering constructive insight into how the comment might be better framed or understood.\n"
+            "- A 'final_summary' paragraph: summarizing how this comment contributes to or detracts from dignified public discourse.\n\n"
+            "Return your full response as a JSON object in the following format:\n\n"
             "{\n"
             "  \"intro\": \"TrueFace is an AI model designed to promote truth, logic, and human dignity in public conversation.\",\n"
-            "  \"comment_excerpt\": \"[Truncated excerpt of the comment]\",\n"
+            "  \"comment_excerpt\": \"[Excerpt]\",\n"
             "  \"evaluations\": {\n"
-            "    \"Emotional Proportion\": \"[Explanation of score]\",\n"
-            "    \"Personal Attribution\": \"[Explanation of score]\",\n"
-            "    \"Cognitive Openness\": \"[Explanation of score]\",\n"
-            "    \"Moral Posture\": \"[Explanation of score]\",\n"
-            "    \"Interpretive Complexity\": \"[Explanation of score]\"\n"
+            "    \"Emotional Proportion\": \"[Short paragraph]\",\n"
+            "    \"Personal Attribution\": \"[Short paragraph]\",\n"
+            "    \"Cognitive Openness\": \"[Short paragraph]\",\n"
+            "    \"Moral Posture\": \"[Short paragraph]\",\n"
+            "    \"Interpretive Complexity\": \"[Short paragraph]\"\n"
             "  },\n"
             "  \"scores\": {\n"
-            "    \"Emotional Proportion\": 0,\n"
-            "    \"Personal Attribution\": 0,\n"
-            "    \"Cognitive Openness\": 0,\n"
-            "    \"Moral Posture\": 0,\n"
-            "    \"Interpretive Complexity\": 0\n"
+            "    \"Emotional Proportion\": 0–5,\n"
+            "    \"Personal Attribution\": 0–5,\n"
+            "    \"Cognitive Openness\": 0–5,\n"
+            "    \"Moral Posture\": 0–5,\n"
+            "    \"Interpretive Complexity\": 0–5\n"
             "  },\n"
-            "  \"topical_consideration\": \"[Balanced, insightful paragraph]\",\n"
-            "  \"final_summary\": \"[Short paragraph]\",\n"
-            "  \"total_score\": 0\n"
-            "}\n"
-            "Ensure the total_score is the correct sum of the five category scores.\n"
-            "Be truthful, fair, and constructive."
+            "  \"topical_consideration\": \"[Thoughtful, constructive paragraph]\",\n"
+            "  \"final_summary\": \"[Short reflection paragraph]\",\n"
+            "  \"total_score\": [Sum of above scores]\n"
+            "}\n\n"
+            "You must return valid JSON that can be parsed directly."
         )
 
         full_input = f"Context: {context}\nComment: {comment}"
@@ -68,6 +68,9 @@ def evaluate():
         )
 
         ai_response = response.choices[0].message.content.strip()
+        # Uncomment to debug
+        # print("AI Response:", ai_response)
+
         data = json.loads(ai_response)
 
         return render_template('result.html',
@@ -99,7 +102,7 @@ def evaluate():
                 "Interpretive Complexity": 0
             },
             total_score=0,
-            final_summary="We were unable to generate a full evaluation at this time.",
+            final_summary="",
             topical_consideration=f"(OpenAI Error: {str(e)})"
         )
 
