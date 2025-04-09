@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 from openai import OpenAI
 import os
+import json
 
 app = Flask(__name__, static_folder='static')
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
@@ -17,17 +18,21 @@ def evaluate():
 
     try:
         prompt = (
-            "Evaluate the following user comment in five categories on a scale from 0 to 5. "
-            "Provide a one-line explanation for each category. Then provide a one-paragraph total summary and a topical consideration.\n\n"
+            "You are an evaluation model. Analyze the following comment and return a JSON object "
+            "containing 'scores' (with each of the five categories as keys: Reasoning, Tone, Engagement, "
+            "Impact, Truth Alignment), each with a score (0–5) and a one-line explanation. Also return a "
+            "'total_summary' and a 'topical_consideration'.\n\n"
             f"Context: {context}\nComment: {comment}\n\n"
-            "Respond in the following format:\n"
-            "Reasoning: [score] - [explanation]\n"
-            "Tone: [score] - [explanation]\n"
-            "Engagement: [score] - [explanation]\n"
-            "Impact: [score] - [explanation]\n"
-            "Truth Alignment: [score] - [explanation]\n"
-            "Total Summary: [summary]\n"
-            "Topical Consideration: [insightful reflection]"
+            "Respond ONLY with a JSON object in this format:\n\n"
+            "{\n"
+            "  \"scores\": {\n"
+            "    \"Reasoning\": {\"score\": 4, \"explanation\": \"...\"},\n"
+            "    \"Tone\": {\"score\": 3, \"explanation\": \"...\"},\n"
+            "    ...\n"
+            "  },\n"
+            "  \"total_summary\": \"...\",\n"
+            "  \"topical_consideration\": \"...\"\n"
+            "}"
         )
 
         response = client.chat.completions.create(
@@ -39,34 +44,14 @@ def evaluate():
         )
 
         ai_text = response.choices[0].message.content.strip()
-        lines = ai_text.split('\n')
 
-        scores = {}
-        explanations = {}
-        total_summary = ""
-        topical_consideration = ""
+        # Parse AI's JSON response
+        data = json.loads(ai_text)
 
-        for line in lines:
-            if ':' in line and '-' in line:
-                try:
-                    category, rest = line.split(':', 1)
-                    score_part, explanation = rest.strip().split('-', 1)
-                    score = int(score_part.strip())
-                    scores[category.strip()] = score
-                    explanations[category.strip()] = explanation.strip()
-                except:
-                    continue
-            elif line.startswith("Total Summary:"):
-                total_summary = line.replace("Total Summary:", "").strip()
-            elif line.startswith("Topical Consideration:"):
-                topical_consideration = line.replace("Topical Consideration:", "").strip()
-
-        # Fallback if AI doesn't provide all five
-        for cat in ['Reasoning', 'Tone', 'Engagement', 'Impact', 'Truth Alignment']:
-            if cat not in scores:
-                scores[cat] = 2
-                explanations[cat] = "AI did not return a valid explanation."
-
+        scores = {k: v["score"] for k, v in data["scores"].items()}
+        explanations = {k: v["explanation"] for k, v in data["scores"].items()}
+        total_summary = data["total_summary"]
+        topical_consideration = data["topical_consideration"]
         total_score = sum(scores.values())
 
     except Exception as e:
