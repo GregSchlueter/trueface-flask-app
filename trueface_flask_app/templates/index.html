@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TrueFace 2.0 Evaluation Portal</title>
   <meta property="og:title" content="TrueFace | Reveal the Real" />
   <meta property="og:description" content="Online social media comment evaluator based on truth, logic, and human dignity." />
-  <meta property="og:image" content="https://truefaceworld.com/static/TrueFace3.png" />
+  <meta property="og:image" content="https://truefaceworld.com/TrueFace3.png" />
   <meta property="og:url" content="https://truefaceworld.com" />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/png" />
+  <link rel="icon" href="favicon.png" type="image/png">
   <style>
-    /* General Styles */
     body {
       font-family: Arial, sans-serif;
       background-color: #f5f5f5;
@@ -84,32 +83,14 @@
       width: 32px;
       height: 32px;
     }
-
-    /* Mobile Styles */
-    @media (max-width: 600px) {
-      body {
-        padding: 20px;
-      }
-      .container {
-        padding: 15px;
-      }
-      h1 {
-        font-size: 24px;
-      }
-    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Header / Intro Section -->
     <div style="text-align: center; margin-bottom: 20px;">
-      <img src="{{ url_for('static', filename='TrueFace3.png') }}" alt="TrueFace Logo" style="max-width: 250px;">
+      <img src="TrueFace3.png" alt="TrueFace Logo" style="max-width: 250px;">
     </div>
     <h1>TrueFace 2.0 Evaluation</h1>
-    <p style="text-align: center;">TrueFace 2.0 is a unique, nonpartisan tool that evaluates the quality of public comments online, grounded in logic, truth, and human dignity. Our mission is to elevate the quality of dialogue by promoting constructive and respectful conversation.</p>
-    <p style="text-align: center;">Simply paste the comment you’d like to evaluate, and TrueFace will assess it across five core categories: Reasoning, Tone, Engagement, Impact, and Truth Alignment.</p>
-
-    <!-- Evaluation Form -->
     <form id="evaluationForm">
       <label for="comment">Comment for Evaluation:</label>
       <textarea id="comment" name="comment" rows="6" placeholder="Paste the comment you want evaluated..."></textarea>
@@ -119,8 +100,6 @@
 
       <input type="submit" value="Submit for Evaluation">
     </form>
-
-    <!-- Evaluation Result -->
     <div id="evaluationResult" class="result"></div>
     <button id="copyButton">Copy to Clipboard</button>
   </div>
@@ -133,7 +112,6 @@
     </p>
   </div>
 
-  <!-- Social Media Share Buttons -->
   <div class="social-icons">
     <a href="https://www.facebook.com/sharer/sharer.php?u=https://truefaceworld.com" target="_blank" title="Share on Facebook">
       <img src="https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/facebook.svg" alt="Facebook">
@@ -164,7 +142,7 @@
       copyButton.style.display = 'none';
 
       try {
-        const res = await fetch('/evaluate', {
+        const res = await fetch('https://trueface-flask-app-1.onrender.com/evaluate', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -174,7 +152,7 @@
 
         const data = await res.json();
         if (data.evaluation) {
-          resultDiv.textContent = `Below is a TrueFace 2.0 evaluation of your comment.\n\n${data.evaluation}`;
+          resultDiv.textContent = `Below is a TrueFace 2.0 evaluation of your comment.\n\nTrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity. Grounded in classical reasoning, social psychology, ethical philosophy, and communication science.\n\nTrueFace evaluates public comments across five core categories—reasoning, tone, engagement, impact, and truth alignment. Each is rated from 0 to 5. A higher score reflects a greater contribution to truthful, respectful, and constructive dialogue across differences.\n\nLearn more or submit your own at: https://TrueFaceWorld.com\n\n${data.evaluation}`;
           copyButton.style.display = 'inline-block';
         } else {
           resultDiv.textContent = 'Error: ' + (data.error || 'Unexpected error.');
