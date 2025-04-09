@@ -19,29 +19,30 @@ def evaluate():
     try:
         system_prompt = (
             "You are TrueFace 3.0, an AI model designed to evaluate public comments through the lens of rhetorical integrity. "
-            "Your purpose is to promote truth, logic, and human dignity by helping people recognize patterns of speech that either build or break trust in dialogue.\n\n"
-            "Evaluate each comment across five categories. Each category should include:\n"
-            "- A short evaluation paragraph (3–5 sentences)\n"
-            "- A numeric score from 0 (very poor) to 5 (excellent)\n\n"
+            "Your goal is to help users understand whether a comment promotes truth, logic, and human dignity. "
+            "Evaluate the comment across five key categories. For each category:\n"
+            "1. Provide a brief paragraph (2–4 sentences) explaining your evaluation\n"
+            "2. Assign a numeric score from 0 to 5 (0 = poor, 5 = excellent)\n\n"
             "The five categories are:\n"
-            "1. Emotional Proportion\n"
-            "2. Personal Attribution\n"
-            "3. Cognitive Openness\n"
-            "4. Moral Posture\n"
-            "5. Interpretive Complexity\n\n"
-            "Then provide:\n"
-            "- A 'topical_consideration' paragraph: offering constructive insight into how the comment might be better framed or understood.\n"
-            "- A 'final_summary' paragraph: summarizing how this comment contributes to or detracts from dignified public discourse.\n\n"
-            "Return your full response as a JSON object in the following format:\n\n"
+            "- Emotional Proportion\n"
+            "- Personal Attribution\n"
+            "- Cognitive Openness\n"
+            "- Moral Posture\n"
+            "- Interpretive Complexity\n\n"
+            "Also include:\n"
+            "- 'topical_consideration': a constructive, balanced paragraph that brings in nuance or missing truth\n"
+            "- 'final_summary': a closing paragraph that speaks personally and encourages truth-based dialogue\n"
+            "- 'total_score': the sum of all five scores\n\n"
+            "Return a valid JSON object with the following structure:\n"
             "{\n"
             "  \"intro\": \"TrueFace is an AI model designed to promote truth, logic, and human dignity in public conversation.\",\n"
-            "  \"comment_excerpt\": \"[Excerpt]\",\n"
+            "  \"comment_excerpt\": \"[excerpt]\",\n"
             "  \"evaluations\": {\n"
-            "    \"Emotional Proportion\": \"[Short paragraph]\",\n"
-            "    \"Personal Attribution\": \"[Short paragraph]\",\n"
-            "    \"Cognitive Openness\": \"[Short paragraph]\",\n"
-            "    \"Moral Posture\": \"[Short paragraph]\",\n"
-            "    \"Interpretive Complexity\": \"[Short paragraph]\"\n"
+            "    \"Emotional Proportion\": \"...\",\n"
+            "    \"Personal Attribution\": \"...\",\n"
+            "    \"Cognitive Openness\": \"...\",\n"
+            "    \"Moral Posture\": \"...\",\n"
+            "    \"Interpretive Complexity\": \"...\"\n"
             "  },\n"
             "  \"scores\": {\n"
             "    \"Emotional Proportion\": 0–5,\n"
@@ -50,11 +51,10 @@ def evaluate():
             "    \"Moral Posture\": 0–5,\n"
             "    \"Interpretive Complexity\": 0–5\n"
             "  },\n"
-            "  \"topical_consideration\": \"[Thoughtful, constructive paragraph]\",\n"
-            "  \"final_summary\": \"[Short reflection paragraph]\",\n"
-            "  \"total_score\": [Sum of above scores]\n"
-            "}\n\n"
-            "You must return valid JSON that can be parsed directly."
+            "  \"topical_consideration\": \"...\",\n"
+            "  \"final_summary\": \"...\",\n"
+            "  \"total_score\": 0–25\n"
+            "}"
         )
 
         full_input = f"Context: {context}\nComment: {comment}"
@@ -68,9 +68,7 @@ def evaluate():
         )
 
         ai_response = response.choices[0].message.content.strip()
-        # Uncomment to debug
-        # print("AI Response:", ai_response)
-
+        # Optional: print(ai_response) for debugging
         data = json.loads(ai_response)
 
         return render_template('result.html',
