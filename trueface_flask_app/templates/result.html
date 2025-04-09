@@ -19,13 +19,32 @@
         }
 
         h1 {
-            margin: 0 0 10px 0;
+            margin-bottom: 10px;
+        }
+
+        .intro {
+            margin: 0 auto 30px auto;
+            font-style: italic;
+            max-width: 700px;
+            color: #444;
         }
 
         .section {
-            margin: 30px auto;
+            margin: 20px auto;
             width: 80%;
             text-align: left;
+        }
+
+        .quote {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #222;
+            margin-bottom: 5px;
+        }
+
+        .context {
+            font-style: italic;
+            color: #555;
         }
 
         .score-table {
@@ -67,10 +86,15 @@
             background-color: #003f88;
         }
 
+        .social-icons {
+            margin-top: 20px;
+        }
+
         .social-icons a {
             margin: 0 10px;
-            text-decoration: none;
             font-size: 1.4em;
+            text-decoration: none;
+            color: #444;
         }
 
         .footer {
@@ -84,12 +108,14 @@
 
     <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace Logo">
     <h1>TrueFace 2.0 Evaluation</h1>
-    <p><strong>Below is a TrueFace evaluation of your comment. TrueFace is an AI model designed to promote truth, clarity, and human dignity in public conversation.</strong></p>
+    <div class="intro">
+        Below is a TrueFace evaluation of your comment. TrueFace is an AI model designed to promote truth, clarity, and human dignity in public conversation.
+    </div>
 
     <div class="section">
-        <p><strong>Comment:</strong> {{ truncated_comment }}</p>
+        <p class="quote">{{ truncated_comment }}</p>
         {% if context %}
-        <p><strong>Context:</strong> {{ context }}</p>
+        <p class="context">Context: {{ context }}</p>
         {% endif %}
     </div>
 
