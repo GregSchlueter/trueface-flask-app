@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TrueFace 2.0 Evaluation</title>
+  <title>TrueFace 3.0 Evaluation</title>
   <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
@@ -44,12 +44,6 @@
       margin-top: 25px;
     }
 
-    .score-line {
-      font-size: 1.15em;
-      font-weight: bold;
-      margin-top: 30px;
-    }
-
     .copy-btn {
       display: block;
       margin: 40px auto 20px;
@@ -65,9 +59,9 @@
     .footer {
       text-align: center;
       font-weight: bold;
-      margin-top: 60px;
-      font-size: 1.15em;
-      color: #111;
+      margin-top: 50px;
+      font-size: 1.1em;
+      color: #222;
     }
 
     .footer a {
@@ -76,12 +70,12 @@
     }
 
     .social-icons {
-      margin-top: 15px;
-      font-size: 1.6em;
+      margin-top: 10px;
+      font-size: 1.4em;
     }
 
     .social-icons a {
-      margin: 0 12px;
+      margin: 0 10px;
       color: #333;
     }
 
@@ -95,7 +89,7 @@
 <body>
 
   <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" class="logo">
-  <h1>TrueFace 2.0 Evaluation</h1>
+  <h1>TrueFace 3.0 Evaluation</h1>
   <div class="intro">
     TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.
   </div>
@@ -105,18 +99,20 @@
   </div>
 
   <div class="section">
-    {% set icons = {
-      "Clarity & Reasoning": "🧠",
-      "Tone & Virtue": "💬",
-      "Engagement Quality": "🤝",
-      "Community Impact": "🌍",
-      "Truthfulness & Alignment": "🔍"
-    } %}
-    {% for category, content in evaluations.items() %}
-      {% set score = content.split("Score: ")[1].split(")")[0] if "Score:" in content else "?" %}
-      <div class="category">{{ icons[category] }} {{ category }} Score: {{ score }}/5</div>
-      <p>{{ content.split('(Score')[0].strip() }}</p>
-    {% endfor %}
+    <div class="category">🧠 Emotional Proportion Score: {{ scores['Emotional Proportion'] }}/5</div>
+    <p>{{ evaluations['Emotional Proportion'] }}</p>
+
+    <div class="category">🎯 Personal Attribution Score: {{ scores['Personal Attribution'] }}/5</div>
+    <p>{{ evaluations['Personal Attribution'] }}</p>
+
+    <div class="category">🧩 Cognitive Openness Score: {{ scores['Cognitive Openness'] }}/5</div>
+    <p>{{ evaluations['Cognitive Openness'] }}</p>
+
+    <div class="category">❤️ Moral Posture Score: {{ scores['Moral Posture'] }}/5</div>
+    <p>{{ evaluations['Moral Posture'] }}</p>
+
+    <div class="category">🔍 Interpretive Complexity Score: {{ scores['Interpretive Complexity'] }}/5</div>
+    <p>{{ evaluations['Interpretive Complexity'] }}</p>
   </div>
 
   <div class="section">
@@ -145,23 +141,32 @@
   <script>
     function copyEvaluation() {
       const text = `
-Below is a TrueFace evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, clarity, and human dignity.
+Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, clarity, and human dignity.
 
 Comment (excerpt): {{ comment_excerpt }}
 
-{% for category, content in evaluations.items() %}
-{{ category }} Score: {{ content.split("Score: ")[1].split(")")[0] }}/5
-{{ content.split('(Score')[0].strip() }}
+🧠 Emotional Proportion Score: {{ scores['Emotional Proportion'] }}/5
+{{ evaluations['Emotional Proportion'] }}
 
-{% endfor %}
+🎯 Personal Attribution Score: {{ scores['Personal Attribution'] }}/5
+{{ evaluations['Personal Attribution'] }}
 
-Topical Consideration:
+🧩 Cognitive Openness Score: {{ scores['Cognitive Openness'] }}/5
+{{ evaluations['Cognitive Openness'] }}
+
+❤️ Moral Posture Score: {{ scores['Moral Posture'] }}/5
+{{ evaluations['Moral Posture'] }}
+
+🔍 Interpretive Complexity Score: {{ scores['Interpretive Complexity'] }}/5
+{{ evaluations['Interpretive Complexity'] }}
+
+📌 Topical Consideration:
 {{ topical_consideration }}
 
-Final Summary:
+🧾 Final Summary:
 {{ final_summary }}
 
-Total Score: {{ total_score }} / 25
+Total Score: {{ total_score }}/25
 
 Want to help us revolutionize social media or explore investment opportunities?
 Revolution@TrueFaceWorld.com
