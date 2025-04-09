@@ -3,7 +3,6 @@ from flask_cors import CORS
 import openai
 import os
 
-# Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
@@ -39,14 +38,13 @@ def evaluate():
         Total Score: Summary and final score.
         """
 
-        # Call OpenAI's GPT model using the ChatCompletion method
+        # Use openai.ChatCompletion.create with the model and message structure
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",  # You can use gpt-4 if it's available to you
+            model="gpt-4",  # Use the model that suits your application (e.g., "gpt-4" or "gpt-3.5-turbo")
             messages=[
-                {"role": "system", "content": "You are an impartial AI that evaluates online comments using the TrueFace 2.0 model."},
+                {"role": "system", "content": "You are a neutral AI evaluator focused on truth, logic, and human dignity."},
                 {"role": "user", "content": prompt}
-            ],
-            temperature=0.3
+            ]
         )
 
         # Extract the generated evaluation from the OpenAI response
