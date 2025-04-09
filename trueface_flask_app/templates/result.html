@@ -3,89 +3,115 @@
 <head>
   <meta charset="UTF-8">
   <title>TrueFace 2.0 Evaluation</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
   <style>
     body {
       font-family: 'Georgia', serif;
       background-color: #fdfdfd;
       padding: 50px;
-      max-width: 800px;
+      max-width: 900px;
       margin: auto;
       color: #222;
     }
+
+    img.logo {
+      width: 384px;
+      display: block;
+      margin: 0 auto 20px;
+    }
+
     h1 {
-      font-size: 2.2em;
-      margin-bottom: 20px;
+      font-size: 2em;
       text-align: center;
+      margin-bottom: 10px;
     }
+
+    .intro {
+      font-size: 1.2em;
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 500;
+    }
+
     .section {
-      margin-top: 30px;
+      margin-bottom: 40px;
     }
+
     .category {
-      font-weight: bold;
-      font-size: 1.1em;
       margin-top: 20px;
-    }
-    .score {
       font-weight: bold;
-      color: #0047a6;
+      font-size: 1.15em;
     }
-    .footer {
-      font-style: italic;
-      color: #555;
-      font-size: 0.95em;
-      margin-top: 50px;
-      text-align: center;
+
+    .icon {
+      margin-right: 6px;
     }
+
     .copy-btn {
-      margin-top: 40px;
+      display: block;
+      margin: 40px auto 20px;
       padding: 10px 20px;
+      font-size: 1em;
       background-color: #002d72;
       color: white;
       border: none;
       border-radius: 6px;
-      font-size: 1em;
       cursor: pointer;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-weight: bold;
+      font-size: 1em;
+      color: #333;
     }
   </style>
 </head>
 <body>
 
+  <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace Logo" class="logo">
   <h1>TrueFace 2.0 Evaluation</h1>
-
-  <p><strong>{{ intro }}</strong></p>
+  <div class="intro">
+    TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.
+  </div>
 
   <div class="section">
     <p><strong>Comment (excerpt):</strong> {{ comment_excerpt }}</p>
+  </div>
 
+  <div class="section">
     {% for category, content in evaluations.items() %}
-      <div class="category">{{ category }}</div>
+      <div class="category">
+        {% if category == "Clarity & Reasoning" %}🧠{% elif category == "Tone & Virtue" %}💬
+        {% elif category == "Engagement Quality" %}🤝{% elif category == "Community Impact" %}🌍
+        {% elif category == "Truthfulness & Alignment" %}🔍{% endif %}
+        {{ category }} — {{ loop.index }}/5
+      </div>
       <p>{{ content }}</p>
     {% endfor %}
+  </div>
 
-    <div class="section">
-      <strong>Topical Consideration:</strong>
-      <p>{{ topical_consideration }}</p>
-    </div>
+  <div class="section">
+    <strong>Topical Consideration:</strong>
+    <p>{{ topical_consideration }}</p>
+  </div>
 
-    <div class="section">
-      <strong>Total Score:</strong> {{ total_score }} / 25
-      <p>{{ final_summary }}</p>
-    </div>
+  <div class="section">
+    <strong>Total Score:</strong> {{ total_score }} / 25
+    <p>{{ final_summary }}</p>
   </div>
 
   <button class="copy-btn" onclick="copyEvaluation()">Copy Evaluation</button>
 
   <div class="footer">
-    {{ intro }}<br>
-    Want to bring truth and clarity to your platform—or explore investment opportunities?<br>
-    <a href="mailto:Revolution@TrueFaceWorld.com">Email us at Revolution@TrueFaceWorld.com</a>
+    Want to help us revolutionize social media or explore investment opportunities? Revolution@TrueFaceWorld.com
   </div>
 
   <script>
     function copyEvaluation() {
       const text = `
-Below is a TrueFace evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, clarity, and human dignity in public conversation.
+Below is a TrueFace evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, clarity, and human dignity.
 
 Comment (excerpt): {{ comment_excerpt }}
 
@@ -102,7 +128,7 @@ Total Score: {{ total_score }} / 25
 {{ final_summary }}
 
 TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity. 
-Want to bring truth and clarity to your platform—or explore investment opportunities? Email us at Revolution@TrueFaceWorld.com
+Want to help us revolutionize social media or explore investment opportunities? Revolution@TrueFaceWorld.com
       `;
       navigator.clipboard.writeText(text);
       alert("Evaluation copied to clipboard!");
