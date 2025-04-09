@@ -60,6 +60,11 @@
       margin-top: 30px;
     }
 
+    .score-display {
+      font-size: 1.1em;
+      margin-bottom: 8px;
+    }
+
     .copy-btn {
       display: block;
       margin: 40px auto 20px;
@@ -127,12 +132,11 @@
 
     <div class="section">
       <div class="section-title">🌿 Together We Can All Be Better</div>
-      <p>{{ topical_consideration }}</p>
+      <p>{{ topical_consideration }} {{ final_summary }}</p>
     </div>
 
     <div class="section">
       <div class="section-title">🧾 Final Summary Score: {{ total_score }}/25</div>
-      <p>{{ final_summary }}</p>
     </div>
 
     <button class="copy-btn" onclick="copyEvaluation()">Copy Evaluation</button>
@@ -173,8 +177,6 @@ Comment (excerpt): {{ comment_excerpt }}
 
 🌿 Together We Can All Be Better:
 {{ topical_consideration }}
-
-🧾 Final Summary:
 {{ final_summary }}
 
 Total Score: {{ total_score }}/25
