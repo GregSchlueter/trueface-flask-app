@@ -4,11 +4,12 @@
   <meta charset="UTF-8">
   <title>TrueFace 2.0 Evaluation</title>
   <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
       font-family: 'Georgia', serif;
       background-color: #fdfdfd;
-      padding: 50px;
+      padding: 40px;
       max-width: 900px;
       margin: auto;
       color: #222;
@@ -17,34 +18,29 @@
     img.logo {
       width: 384px;
       display: block;
-      margin: 0 auto 20px;
+      margin: 0 auto 10px;
     }
 
     h1 {
-      font-size: 2em;
       text-align: center;
+      font-size: 2em;
       margin-bottom: 10px;
     }
 
     .intro {
-      font-size: 1.2em;
       text-align: center;
+      font-size: 1.1em;
       margin-bottom: 30px;
-      font-weight: 500;
     }
 
     .section {
-      margin-bottom: 40px;
+      margin-bottom: 30px;
     }
 
     .category {
-      margin-top: 20px;
       font-weight: bold;
       font-size: 1.15em;
-    }
-
-    .icon {
-      margin-right: 6px;
+      margin-top: 20px;
     }
 
     .copy-btn {
@@ -61,16 +57,29 @@
 
     .footer {
       text-align: center;
-      margin-top: 40px;
       font-weight: bold;
-      font-size: 1em;
+      margin-top: 40px;
+    }
+
+    .footer a {
+      color: #0056d2;
+      text-decoration: none;
+    }
+
+    .social-icons {
+      margin-top: 10px;
+      font-size: 1.4em;
+    }
+
+    .social-icons a {
+      margin: 0 10px;
       color: #333;
     }
   </style>
 </head>
 <body>
 
-  <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace Logo" class="logo">
+  <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" class="logo">
   <h1>TrueFace 2.0 Evaluation</h1>
   <div class="intro">
     TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.
@@ -105,7 +114,14 @@
   <button class="copy-btn" onclick="copyEvaluation()">Copy Evaluation</button>
 
   <div class="footer">
-    Want to help us revolutionize social media or explore investment opportunities? Revolution@TrueFaceWorld.com
+    Want to help us revolutionize social media or explore investment opportunities?<br>
+    <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a>
+    <div class="social-icons">
+      <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
+      <a href="https://twitter.com" target="_blank"><i class="fab fa-x-twitter"></i></a>
+      <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+      <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+    </div>
   </div>
 
   <script>
@@ -116,7 +132,7 @@ Below is a TrueFace evaluation of your comment. TrueFace is an AI model designed
 Comment (excerpt): {{ comment_excerpt }}
 
 {% for category, content in evaluations.items() %}
-{{ category }}:
+{{ category }} — {{ loop.index }}/5
 {{ content }}
 
 {% endfor %}
@@ -127,8 +143,8 @@ Topical Consideration:
 Total Score: {{ total_score }} / 25
 {{ final_summary }}
 
-TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity. 
-Want to help us revolutionize social media or explore investment opportunities? Revolution@TrueFaceWorld.com
+Want to help us revolutionize social media or explore investment opportunities?
+Revolution@TrueFaceWorld.com
       `;
       navigator.clipboard.writeText(text);
       alert("Evaluation copied to clipboard!");
