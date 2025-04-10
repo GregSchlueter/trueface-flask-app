@@ -81,23 +81,13 @@ def evaluate():
 
         ai_response = raw_output.strip()
 
-	# ✅ Only keep the JSON portion (after the first curly brace)
-	json_start = ai_response.find('{')
-	if json_start == -1:
-  	raise ValueError("No JSON object found in GPT response.")
+        # ✅ Extract only the JSON part if mixed content exists
+        json_start = ai_response.find('{')
+        if json_start == -1:
+            raise ValueError("No JSON object found in GPT response.")
 
-json_string = ai_response[json_start:]
-
-data = json.loads(json_string)
-
-
-        try:
-            with open("last_gpt_response.json", "w", encoding="utf-8") as f:
-                f.write(ai_response)
-        except:
-            pass  # Silently ignore file writing issues
-
-        data = json.loads(ai_response)
+        json_string = ai_response[json_start:]
+        data = json.loads(json_string)
 
         # ✅ Validate required keys
         required_main_keys = ["evaluations", "scores", "together_we_are_all_stronger"]
