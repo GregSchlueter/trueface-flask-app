@@ -72,15 +72,12 @@ def evaluate():
         if not response.choices or not response.choices[0].message:
             raise ValueError("GPT did not return a valid message.")
 
-        raw_output = response.choices[0].message.content
-        print("\n--- RAW GPT OUTPUT ---\n", raw_output, "\n")
+        ai_response = response.choices[0].message.content
+        print("\n--- RAW GPT OUTPUT ---\n", ai_response, "\n")
 
-        if not raw_output or raw_output.strip() == "":
+        if not ai_response or ai_response.strip() == "":
             raise ValueError("GPT response was empty.")
 
-        ai_response = raw_output.strip()
-
-        # ✅ Extract only JSON portion
         json_start = ai_response.find('{')
         if json_start == -1:
             raise ValueError("No JSON object found in GPT response.")
@@ -88,29 +85,32 @@ def evaluate():
         json_string = ai_response[json_start:]
         data = json.loads(json_string)
 
-        # ✅ Validate presence of required fields
-        required_main_keys = ["evaluations", "scores", "together_we_are_all_stronger"]
-        for key in required_main_keys:
+        required_keys = ["evaluations", "scores", "together_we_are_all_stronger"]
+        for key in required_keys:
             if key not in data:
                 raise ValueError(f"Missing key: {key}")
 
-        required_subkeys = [
+        subkeys = [
             "Emotional Proportion",
             "Personal Attribution",
             "Cognitive Openness",
             "Moral Posture",
             "Interpretive Complexity"
         ]
-        for key in required_subkeys:
+        for key in subkeys:
             if key not in data["evaluations"] or key not in data["scores"]:
                 raise ValueError(f"Missing subkey: {key}")
+
+        # ✅ Auto-calculate total_score if not provided
+        score_values = list(data["scores"].values())
+        total_score = data.get("total_score", sum(score_values))
 
         return render_template('result.html',
             intro=data.get("intro", "TrueFace is an AI model designed to promote truth, logic, and human dignity in public conversation."),
             comment_excerpt=data.get("comment_excerpt", truncated_comment),
             evaluations=data["evaluations"],
             scores=data["scores"],
-            total_score=data["total_score"],
+            total_score=total_score,
             together_we_are_all_stronger=data["together_we_are_all_stronger"]
         )
 
@@ -134,7 +134,7 @@ def evaluate():
                 "Interpretive Complexity": 0
             },
             total_score=0,
-            together_we_are_all_stronger="(OpenAI Error: " + str(e) + ")"
+            together_we_are_all_stronger="(System Error: " + str(e) + ")"
         )
 
 if __name__ == '__main__':
