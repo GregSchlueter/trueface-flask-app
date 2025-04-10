@@ -4,143 +4,129 @@
 <head>
     <meta charset="UTF-8">
     <title>TrueFace 3.0 Evaluation</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            background-color: #f8f9fb;
             margin: 0;
-            padding: 20px;
-            color: #333;
-        }
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .logo {
-            width: 250px;
-            display: block;
-            margin: auto;
-        }
-        .intro {
+            padding: 40px;
             text-align: center;
-            font-weight: bold;
-            font-size: 1.2em;
+        }
+
+        img.logo {
+            width: 300px;
             margin-bottom: 20px;
         }
-        .humanity-scale {
-            background-color: #f0f4f8;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 30px;
+
+        .evaluation-box {
+            background: #fff;
+            padding: 30px;
+            margin: auto;
+            width: 80%;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
         }
-        .humanity-scale h3 {
-            margin-top: 0;
-        }
-        .humanity-icons {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .humanity-icons div {
-            text-align: center;
-            flex: 1;
-        }
-        .humanity-icons img {
-            height: 60px;
-        }
+
         .category-section {
-            margin: 20px 0;
+            text-align: left;
+            margin-top: 30px;
         }
-        .category-title {
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-top: 10px;
+
+        .category-section h3 {
+            margin-top: 20px;
+            font-size: 1.2em;
         }
-        .score {
-            font-weight: bold;
-            color: #444;
-        }
-        .summary {
-            background-color: #f4f4f4;
+
+        .humanity-scale {
+            margin-top: 30px;
+            background: #f0f2f5;
             padding: 15px;
-            border-left: 5px solid #ccc;
-            margin-top: 20px;
-            border-radius: 6px;
+            border-radius: 8px;
         }
+
+        .humanity-scale img {
+            width: 40px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+
         .final-score {
-            font-size: 1.3em;
             font-weight: bold;
-            margin-top: 20px;
+            font-size: 1.2em;
+            margin-top: 30px;
         }
+
+        .together-section {
+            margin-top: 30px;
+            padding: 15px;
+            background: #eef4f8;
+            border-radius: 8px;
+        }
+
         .footer {
             margin-top: 40px;
             font-size: 0.9em;
-            text-align: center;
-            color: #555;
+            color: #666;
         }
-        .social-icons {
-            margin-top: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
+
+        .footer a {
+            text-decoration: none;
+            color: #004080;
+            font-weight: bold;
         }
+
         .social-icons img {
-            height: 24px;
+            width: 24px;
+            margin: 10px 8px 0 8px;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace Logo" class="logo">
-    <p class="intro">TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.</p>
 
-    <div class="humanity-scale">
-        <h3>Humanity Scale</h3>
-        <div class="humanity-icons">
-            <div><img src="{{ url_for('static', filename='images/0_cave_echo.png') }}"><br><small>Cave Echo<br>(0 - Reactionary)</small></div>
-            <div><img src="{{ url_for('static', filename='images/1_torch_waver.png') }}"><br><small>Torch Waver<br>(1 - Provocative)</small></div>
-            <div><img src="{{ url_for('static', filename='images/2_tribal_shouter.png') }}"><br><small>Tribal Shouter<br>(2 - Combative)</small></div>
-            <div><img src="{{ url_for('static', filename='images/3_debater.png') }}"><br><small>Debater<br>(3 - Analytical)</small></div>
-            <div><img src="{{ url_for('static', filename='images/4_bridge_builder.png') }}"><br><small>Bridge Builder<br>(4 - Empathetic)</small></div>
-            <div><img src="{{ url_for('static', filename='images/5_fully_alive.png') }}"><br><small>Fully Alive<br>(5 - Transformational)</small></div>
+    <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" class="logo" alt="TrueFace Logo">
+    <p><strong>TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.</strong></p>
+
+    <div class="evaluation-box">
+
+        <p><strong>Below is a TrueFace 3.0 evaluation of your comment.</strong></p>
+        <p><strong>Comment (excerpt):</strong> "{{ comment_excerpt }}"</p>
+
+        <div class="humanity-scale">
+            <h3>Humanity Scale</h3>
+            <img src="{{ url_for('static', filename='images/' + humanity_icon) }}" alt="Humanity Score Icon">
+            <p><strong>{{ humanity_label }}</strong>: {{ humanity_description }}</p>
         </div>
-    </div>
 
-    <p><strong>Below is a TrueFace 3.0 evaluation of your comment:</strong></p>
-    <p><strong>Comment (excerpt):</strong> {{ comment_excerpt }}</p>
+        <div class="category-section">
+            {% for category in categories %}
+                <h3>{{ category.icon }} {{ category.name }}: {{ category.score }}/5</h3>
+                <p>{{ category.description }}</p>
+            {% endfor %}
+        </div>
 
-    {% for category, score in scores.items() %}
-    <div class="category-section">
-        <p class="category-title">{{ category }}: {{ score }}/5</p>
-        <p>{{ evaluations[category] }}</p>
-    </div>
-    {% endfor %}
+        <div class="final-score">
+            🧾 Final Summary Score: {{ total_score }}/25
+        </div>
 
-    <div class="summary">
-        <h3>Together We Are Better</h3>
-        <p>{{ together_we_are_all_stronger }}</p>
-    </div>
+        <div class="together-section">
+            <h3>Together We Are Better</h3>
+            <p>{{ together_we_are_all_stronger }}</p>
+        </div>
 
-    <p class="final-score">Final Summary Score: {{ total_score }}/25</p>
-    <p class="final-score">Make social media better with TrueFace | "Reveal the Real" GO: <a href="https://truefaceworld.com">TrueFaceWorld.com</a></p>
-
-    <div class="social-icons">
-        <a href="https://facebook.com" target="_blank"><img src="{{ url_for('static', filename='images/facebook-icon.png') }}"></a>
-        <a href="https://twitter.com" target="_blank"><img src="{{ url_for('static', filename='images/x-icon.png') }}"></a>
-        <a href="https://instagram.com" target="_blank"><img src="{{ url_for('static', filename='images/instagram-icon.png') }}"></a>
-        <a href="https://linkedin.com" target="_blank"><img src="{{ url_for('static', filename='images/linkedin-icon.png') }}"></a>
     </div>
 
     <div class="footer">
-        Want to help us revolutionize social media or explore investment opportunities? <strong>Revolution@TrueFaceWorld.com</strong>
+        <p><strong>Make social media better with TrueFace | "Reveal the Real" GO:</strong> <a href="https://truefaceworld.com" target="_blank">TrueFaceWorld.com</a></p>
+        <p><strong>Want to help us revolutionize social media or explore investment opportunities?</strong><br><a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a></p>
+        <div class="social-icons">
+            <img src="{{ url_for('static', filename='images/facebook-icon.png') }}" alt="Facebook">
+            <img src="{{ url_for('static', filename='images/x-icon.png') }}" alt="X (Twitter)">
+            <img src="{{ url_for('static', filename='images/instagram-icon.png') }}" alt="Instagram">
+            <img src="{{ url_for('static', filename='images/linkedin-icon.png') }}" alt="LinkedIn">
+        </div>
     </div>
-</div>
+
 </body>
 </html>
