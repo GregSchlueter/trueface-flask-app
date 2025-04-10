@@ -30,6 +30,9 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             text-align: left;
         }
+        .category-section {
+            margin-top: 20px;
+        }
         .category-section h3 {
             margin-bottom: 5px;
             color: #333;
@@ -46,10 +49,18 @@
             font-size: 1.2em;
             font-weight: bold;
         }
+        .scale-box {
+            background-color: #f9f9f9;
+            padding: 20px;
+            margin: 30px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
         .scale-row {
             display: flex;
             justify-content: space-around;
             margin-top: 15px;
+            flex-wrap: wrap;
         }
         .scale-item img {
             width: 60px;
@@ -58,6 +69,10 @@
         .scale-item p {
             text-align: center;
             margin: 5px 0 0 0;
+            font-size: 0.9em;
+        }
+        .footer-links {
+            text-align: center;
         }
         .social-icons {
             margin-top: 15px;
@@ -77,6 +92,36 @@
     <div class="evaluation-card">
         <h2>Below is a TrueFace 3.0 evaluation of your comment.</h2>
 
+        <div class="scale-box">
+            <h3>Humanity Scale 1.0</h3>
+            <div class="scale-row">
+                <div class="scale-item">
+                    <img src="{{ url_for('static', filename='images/0_cave_echo.png') }}" alt="Cave Echo">
+                    <p>0 - 🪨 Cave Echo</p>
+                </div>
+                <div class="scale-item">
+                    <img src="{{ url_for('static', filename='images/1_torch_waver.png') }}" alt="Torch Waver">
+                    <p>1 - 🔥 Torch Waver</p>
+                </div>
+                <div class="scale-item">
+                    <img src="{{ url_for('static', filename='images/2_tribal_shouter.png') }}" alt="Tribal Shouter">
+                    <p>2 - 📢 Tribal Shouter</p>
+                </div>
+                <div class="scale-item">
+                    <img src="{{ url_for('static', filename='images/3_debater.png') }}" alt="Debater">
+                    <p>3 - 🎤 Debater</p>
+                </div>
+                <div class="scale-item">
+                    <img src="{{ url_for('static', filename='images/4_bridge_builder.png') }}" alt="Bridge Builder">
+                    <p>4 - 🌉 Bridge Builder</p>
+                </div>
+                <div class="scale-item">
+                    <img src="{{ url_for('static', filename='images/5_fully_alive.png') }}" alt="Fully Alive">
+                    <p>5 - 💡 Fully Alive</p>
+                </div>
+            </div>
+        </div>
+
         <p><strong>Comment (excerpt):</strong> "{{ comment_excerpt }}"</p>
 
         {% for category in scores %}
@@ -93,36 +138,6 @@
         <div class="summary-section">
             <h3>Together We Are Better</h3>
             <p>{{ together_we_are_all_stronger }}</p>
-        </div>
-
-        <div class="humanity-scale">
-            <h3>Humanity Scale 1.0</h3>
-            <div class="scale-row">
-                <div class="scale-item">
-                    <img src="{{ url_for('static', filename='images/0_cave_echo.png') }}" alt="Cave Echo">
-                    <p>0 - Cave Echo</p>
-                </div>
-                <div class="scale-item">
-                    <img src="{{ url_for('static', filename='images/1_torch_waver.png') }}" alt="Torch Waver">
-                    <p>1 - Torch Waver</p>
-                </div>
-                <div class="scale-item">
-                    <img src="{{ url_for('static', filename='images/2_tribal_shouter.png') }}" alt="Tribal Shouter">
-                    <p>2 - Tribal Shouter</p>
-                </div>
-                <div class="scale-item">
-                    <img src="{{ url_for('static', filename='images/3_debater.png') }}" alt="Debater">
-                    <p>3 - Debater</p>
-                </div>
-                <div class="scale-item">
-                    <img src="{{ url_for('static', filename='images/4_bridge_builder.png') }}" alt="Bridge Builder">
-                    <p>4 - Bridge Builder</p>
-                </div>
-                <div class="scale-item">
-                    <img src="{{ url_for('static', filename='images/5_fully_alive.png') }}" alt="Fully Alive">
-                    <p>5 - Fully Alive</p>
-                </div>
-            </div>
         </div>
 
         <p class="cta-bold">
