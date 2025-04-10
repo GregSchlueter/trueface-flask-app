@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -34,15 +33,13 @@
             flex-wrap: wrap;
             gap: 16px;
             margin: 20px 0;
-            justify-content: center;
         }
         .humanity-item {
-            width: 130px;
+            width: 100px;
             text-align: center;
-            font-size: 14px;
         }
         .humanity-item img {
-            width: 75px;
+            width: 50px;
             height: auto;
         }
         .comment-box {
@@ -77,7 +74,7 @@
     <p><strong>TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.</strong></p>
 
     <div class="comment-box">
-        <p><strong>Comment:</strong> [User comment will appear here]</p>
+        <p><strong>Comment:</strong> {{ comment_excerpt }}</p>
     </div>
 
     <div class="score-block">
@@ -85,51 +82,51 @@
         <div class="humanity-scale">
             <div class="humanity-item">
                 <img src="/static/images/0_cave_echo.png" alt="Cave Echo">
-                <div><strong>Cave Echo</strong><br>Echoes others without awareness</div>
+                <div>0: Cave Echo</div>
             </div>
             <div class="humanity-item">
                 <img src="/static/images/1_torch_waver.png" alt="Torch Waver">
-                <div><strong>Torch Waver</strong><br>Signals frustration but lacks clarity</div>
+                <div>1: Torch Waver</div>
             </div>
             <div class="humanity-item">
                 <img src="/static/images/2_tribal_shouter.png" alt="Tribal Shouter">
-                <div><strong>Tribal Shouter</strong><br>Fights for a side, not the truth</div>
+                <div>2: Tribal Shouter</div>
             </div>
             <div class="humanity-item">
                 <img src="/static/images/3_debater.png" alt="Debater">
-                <div><strong>Debater</strong><br>Wants truth but still armored</div>
+                <div>3: Debater</div>
             </div>
             <div class="humanity-item">
                 <img src="/static/images/4_bridge_builder.png" alt="Bridge Builder">
-                <div><strong>Bridge Builder</strong><br>Reaches across with reason</div>
+                <div>4: Bridge Builder</div>
             </div>
             <div class="humanity-item">
                 <img src="/static/images/5_fully_alive.png" alt="Fully Alive">
-                <div><strong>Fully Alive</strong><br>Speaks truth with love and courage</div>
+                <div>5: Fully Alive</div>
             </div>
         </div>
     </div>
 
     <div class="score-block">
-        <h2>🧠 Emotional Proportion: 3/5</h2>
-        <p>The comment has moderate emotional intensity—expressive but not out of control. A more measured tone would help build bridges.</p>
+        <h2>🧠 Emotional Proportion: {{ scores['Emotional Proportion'] }}/5</h2>
+        <p style="text-align: left;">{{ evaluations['Emotional Proportion'] }}</p>
 
-        <h2>🎯 Personal Attribution: 3/5</h2>
-        <p>While not directly insulting, the comment implies personal blame. Focus on ideas can elevate the exchange.</p>
+        <h2>🎯 Personal Attribution: {{ scores['Personal Attribution'] }}/5</h2>
+        <p style="text-align: left;">{{ evaluations['Personal Attribution'] }}</p>
 
-        <h2>🧩 Cognitive Openness: 3/5</h2>
-        <p>The comment shows some openness but could benefit from curiosity or questions that invite discussion.</p>
+        <h2>🧩 Cognitive Openness: {{ scores['Cognitive Openness'] }}/5</h2>
+        <p style="text-align: left;">{{ evaluations['Cognitive Openness'] }}</p>
 
-        <h2>❤️ Moral Posture: 3/5</h2>
-        <p>There's a tone of moral judgment without demonization. Acknowledging complexity would deepen the moral integrity.</p>
+        <h2>❤️ Moral Posture: {{ scores['Moral Posture'] }}/5</h2>
+        <p style="text-align: left;">{{ evaluations['Moral Posture'] }}</p>
 
-        <h2>🔍 Interpretive Complexity: 3/5</h2>
-        <p>The comment shows partial awareness of complexity, but risks oversimplifying or reacting instead of reflecting.</p>
+        <h2>🔍 Interpretive Complexity: {{ scores['Interpretive Complexity'] }}/5</h2>
+        <p style="text-align: left;">{{ evaluations['Interpretive Complexity'] }}</p>
 
         <h2>🌿 Together We Are Better</h2>
-        <p>Dear Commenter, your comment hints at deeper concerns that matter to many. A respectful tone and honest inquiry could make it a powerful invitation. Dialogue thrives when we bring facts, clarity, and care. <strong>Together we are better.</strong></p>
+        <p style="text-align: left;">{{ together_we_are_all_stronger }}</p>
 
-        <h2>🧾 Final Summary Score: 15/25</h2>
+        <h2>🧾 Final Summary Score: {{ total_score }}/25</h2>
         <p class="footer-note">Make social media better with TrueFace | "Reveal the Real" GO: <a href="https://truefaceworld.com">TrueFaceWorld.com</a></p>
     </div>
 
