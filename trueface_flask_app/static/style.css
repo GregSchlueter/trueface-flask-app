@@ -7,7 +7,7 @@ body {
 }
 
 .logo {
-    width: 200px;
+    width: 300px;
     margin: 30px auto 10px;
 }
 
@@ -21,7 +21,7 @@ body {
     background: white;
     margin: 0 auto 40px;
     padding: 30px;
-    max-width: 800px;
+    max-width: 850px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
@@ -29,6 +29,7 @@ body {
 .category-section {
     margin-bottom: 25px;
     text-align: left;
+    padding: 0 20px;
 }
 
 .total-score {
@@ -43,6 +44,8 @@ body {
     border-radius: 8px;
     margin-top: 30px;
     text-align: left;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .humanity-scale {
@@ -82,4 +85,21 @@ body {
     margin-top: 40px;
     font-size: 0.95em;
     color: #333;
+}
+
+.footer-links a {
+    color: #0a58ca;
+    text-decoration: none;
+}
+
+.social-icons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-icons img {
+    height: 30px;
+    width: 30px;
 }
