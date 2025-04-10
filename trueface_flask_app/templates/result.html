@@ -8,15 +8,7 @@
 </head>
 <body>
 
-    <div class="top-bar">
-        <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace Logo" class="logo">
-        <div class="social-icons-top">
-            <a href="https://x.com" target="_blank"><img src="{{ url_for('static', filename='images/x-icon.png') }}" alt="X"></a>
-            <a href="https://facebook.com" target="_blank"><img src="{{ url_for('static', filename='images/facebook-icon.png') }}" alt="Facebook"></a>
-            <a href="https://instagram.com" target="_blank"><img src="{{ url_for('static', filename='images/instagram-icon.png') }}" alt="Instagram"></a>
-            <a href="https://linkedin.com" target="_blank"><img src="{{ url_for('static', filename='images/linkedin-icon.png') }}" alt="LinkedIn"></a>
-        </div>
-    </div>
+    <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace Logo" class="logo">
 
     <p class="mission">TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.</p>
 
@@ -53,6 +45,13 @@
         </div>
 
         <div class="footer-links">
+            <div class="social-icons">
+                <a href="https://x.com" target="_blank"><img src="{{ url_for('static', filename='images/x-icon.png') }}" alt="X"></a>
+                <a href="https://facebook.com" target="_blank"><img src="{{ url_for('static', filename='images/facebook-icon.png') }}" alt="Facebook"></a>
+                <a href="https://instagram.com" target="_blank"><img src="{{ url_for('static', filename='images/instagram-icon.png') }}" alt="Instagram"></a>
+                <a href="https://linkedin.com" target="_blank"><img src="{{ url_for('static', filename='images/linkedin-icon.png') }}" alt="LinkedIn"></a>
+            </div>
+
             <p><strong>Make social media better with TrueFace | "Reveal the Real" GO: <a href="https://truefaceworld.com">TrueFaceWorld.com</a></strong></p>
             <p>Want to help us revolutionize social media or explore investment opportunities?<br>
             <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a></p>
