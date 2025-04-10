@@ -81,6 +81,16 @@ def evaluate():
 
         ai_response = raw_output.strip()
 
+	# ✅ Only keep the JSON portion (after the first curly brace)
+	json_start = ai_response.find('{')
+	if json_start == -1:
+  	raise ValueError("No JSON object found in GPT response.")
+
+json_string = ai_response[json_start:]
+
+data = json.loads(json_string)
+
+
         try:
             with open("last_gpt_response.json", "w", encoding="utf-8") as f:
                 f.write(ai_response)
