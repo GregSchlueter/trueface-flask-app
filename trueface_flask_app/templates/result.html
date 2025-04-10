@@ -5,17 +5,79 @@
     <title>TrueFace 3.0 Evaluation</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .logo {
+            width: 250px;
+            margin-top: 30px;
+        }
+        .mission {
+            font-size: 1.1em;
+            margin: 20px;
+        }
+        .evaluation-card {
+            background-color: white;
+            margin: 30px auto;
+            padding: 30px;
+            max-width: 900px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        .category-section h3 {
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .category-section p {
+            margin-top: 0;
+            font-style: italic;
+        }
+        .total-score, .summary-section, .humanity-scale, .footer-links {
+            margin-top: 30px;
+        }
+        .cta-bold {
+            margin-top: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .scale-row {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 15px;
+        }
+        .scale-item img {
+            width: 60px;
+            height: auto;
+        }
+        .scale-item p {
+            text-align: center;
+            margin: 5px 0 0 0;
+        }
+        .social-icons {
+            margin-top: 15px;
+        }
+        .social-icons img {
+            width: 30px;
+            margin: 0 10px;
+        }
+    </style>
 </head>
 <body>
 
     <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace Logo" class="logo">
 
-    <p class="mission">TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.</p>
+    <p class="mission"><strong>TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.</strong></p>
 
     <div class="evaluation-card">
         <h2>Below is a TrueFace 3.0 evaluation of your comment.</h2>
 
-        <p><strong>Comment (excerpt):</strong> {{ comment_excerpt }}</p>
+        <p><strong>Comment (excerpt):</strong> "{{ comment_excerpt }}"</p>
 
         {% for category in scores %}
         <div class="category-section">
@@ -36,25 +98,48 @@
         <div class="humanity-scale">
             <h3>Humanity Scale 1.0</h3>
             <div class="scale-row">
-                <div class="scale-item"><img src="{{ url_for('static', filename='images/humanity1.png') }}"><p>1/5</p></div>
-                <div class="scale-item"><img src="{{ url_for('static', filename='images/humanity2.png') }}"><p>2/5</p></div>
-                <div class="scale-item"><img src="{{ url_for('static', filename='images/humanity3.png') }}"><p>3/5</p></div>
-                <div class="scale-item"><img src="{{ url_for('static', filename='images/humanity4.png') }}"><p>4/5</p></div>
-                <div class="scale-item"><img src="{{ url_for('static', filename='images/humanity5.png') }}"><p>5/5</p></div>
+                <div class="scale-item">
+                    <img src="{{ url_for('static', filename='images/0_cave_echo.png') }}" alt="Cave Echo">
+                    <p>0 - Cave Echo</p>
+                </div>
+                <div class="scale-item">
+                    <img src="{{ url_for('static', filename='images/1_torch_waver.png') }}" alt="Torch Waver">
+                    <p>1 - Torch Waver</p>
+                </div>
+                <div class="scale-item">
+                    <img src="{{ url_for('static', filename='images/2_tribal_shouter.png') }}" alt="Tribal Shouter">
+                    <p>2 - Tribal Shouter</p>
+                </div>
+                <div class="scale-item">
+                    <img src="{{ url_for('static', filename='images/3_debater.png') }}" alt="Debater">
+                    <p>3 - Debater</p>
+                </div>
+                <div class="scale-item">
+                    <img src="{{ url_for('static', filename='images/4_bridge_builder.png') }}" alt="Bridge Builder">
+                    <p>4 - Bridge Builder</p>
+                </div>
+                <div class="scale-item">
+                    <img src="{{ url_for('static', filename='images/5_fully_alive.png') }}" alt="Fully Alive">
+                    <p>5 - Fully Alive</p>
+                </div>
             </div>
         </div>
 
+        <p class="cta-bold">
+            Make social media better with TrueFace | "Reveal the Real" GO:
+            <a href="https://truefaceworld.com">TrueFaceWorld.com</a>
+        </p>
+
         <div class="footer-links">
+            <p>Want to help us revolutionize social media or explore investment opportunities?<br>
+            <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a></p>
+
             <div class="social-icons">
                 <a href="https://x.com" target="_blank"><img src="{{ url_for('static', filename='images/x-icon.png') }}" alt="X"></a>
                 <a href="https://facebook.com" target="_blank"><img src="{{ url_for('static', filename='images/facebook-icon.png') }}" alt="Facebook"></a>
                 <a href="https://instagram.com" target="_blank"><img src="{{ url_for('static', filename='images/instagram-icon.png') }}" alt="Instagram"></a>
                 <a href="https://linkedin.com" target="_blank"><img src="{{ url_for('static', filename='images/linkedin-icon.png') }}" alt="LinkedIn"></a>
             </div>
-
-            <p><strong>Make social media better with TrueFace | "Reveal the Real" GO: <a href="https://truefaceworld.com">TrueFaceWorld.com</a></strong></p>
-            <p>Want to help us revolutionize social media or explore investment opportunities?<br>
-            <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a></p>
         </div>
     </div>
 
