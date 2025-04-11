@@ -32,13 +32,8 @@ class CommentForm(FlaskForm):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    """
-    Render the index page with the comment form.
-    On valid submission, redirect to evaluate route with URL-encoded parameters.
-    """
     form = CommentForm()
     if form.validate_on_submit():
-        # URL-encode comment and context to handle special characters
         return redirect(url_for('evaluate',
                               comment=quote(form.comment.data),
                               context=quote(form.context.data or '')))
@@ -46,10 +41,6 @@ def index():
 
 @app.route('/evaluate', methods=['GET'])
 def evaluate():
-    """
-    Evaluate the comment using OpenAI and render results.
-    Expects comment and context as URL-encoded query parameters.
-    """
     # Decode and sanitize inputs
     comment = bleach.clean(request.args.get('comment', ''))
     context = bleach.clean(request.args.get('context', ''))
@@ -58,11 +49,12 @@ def evaluate():
         logger.warning("No comment provided for evaluation")
         return render_template("result.html",
                              intro="Error: No comment provided.",
-                             comment_excerpt="")
+                             comment_excerpt="",
+                             humanity_scale={})  # Empty dict as fallback
 
     logger.info(f"Evaluating comment (first 50 chars): {comment[:50]}...")
 
-    # Define humanity scale
+    # Define humanity scale (moved outside try block to ensure availability)
     humanity_scale = {
         0: ("0_cave_echo", "Cave Echo", "Trapped in reactive noise, no original thought."),
         1: ("1_torch_waver", "Torch Waver", "Carries passion but fuels fire more than light."),
@@ -73,31 +65,41 @@ def evaluate():
     }
 
     try:
-        # Call OpenAI API with JSON response instruction
+        # Call OpenAI API with stricter JSON enforcement
         response = client.chat.completions.create(
-            model="gpt-4o",  # Use gpt-4o; change to gpt-4 if preferred
+            model="gpt-4o",
             messages=[
                 {
                     "role": "system",
                     "content": (
-                        "You are a helpful assistant trained to analyze and score comments. "
-                        "Return a JSON object with three keys: "
-                        "'scores' (a dictionary with categories like 'Clarity', 'Empathy', 'Logic', 'Respect', 'Constructiveness' and integer scores 0-5), "
+                        "You are an analytical assistant trained to evaluate comments. "
+                        "Respond ONLY with a valid JSON object containing three keys: "
+                        "'scores' (a dictionary with categories 'Clarity', 'Empathy', 'Logic', 'Respect', 'Constructiveness' and integer scores 0-5), "
                         "'evaluations' (a dictionary with the same categories and string explanations), "
-                        "and 'together_we_are_all_stronger' (a summary string encouraging constructive dialogue)."
+                        "and 'together_we_are_all_stronger' (a summary string encouraging constructive dialogue). "
+                        "Do not include any text outside the JSON object. Example: "
+                        '{"scores": {"Clarity": 4, "Empathy": 3, "Logic": 4, "Respect": 2, "Constructiveness": 3}, '
+                        '"evaluations": {"Clarity": "Clear points made.", "Empathy": "Some understanding shown.", '
+                        '"Logic": "Reasoning is solid.", "Respect": "Tone could be more respectful.", '
+                        '"Constructiveness": "Offers critique but lacks solutions."}, '
+                        '"together_we_are_all_stronger": "Let’s focus on constructive ideas to unite us."}'
                     )
                 },
                 {
                     "role": "user",
-                    "content": f"Evaluate the following comment in context: '{context}' and the comment: '{comment}'."
+                    "content": f"Evaluate this comment in context: Context: '{context}'. Comment: '{comment}'."
                 }
             ],
             temperature=0.7,
             max_tokens=500
         )
 
+        # Log raw response for debugging
+        raw_response = response.choices[0].message.content
+        logger.info(f"Raw OpenAI response: {raw_response[:200]}...")
+
         # Parse JSON response
-        data = json.loads(response.choices[0].message.content)
+        data = json.loads(raw_response)
 
         # Validate response structure
         required_keys = ['scores', 'evaluations', 'together_we_are_all_stronger']
@@ -108,7 +110,7 @@ def evaluate():
         evaluations = data["evaluations"]
         summary = data["together_we_are_all_stronger"]
 
-        # Validate scores: ensure they’re integers 0–5 and match evaluations
+        # Validate scores
         valid_scores = {}
         for category, score in scores.items():
             try:
@@ -125,8 +127,6 @@ def evaluate():
 
         # Calculate total score
         total_score = sum(valid_scores.values())
-
-        # Calculate humanity score
         final_humanity_score = min(5, max(0, total_score // len(valid_scores)))
 
         # Render results
@@ -146,25 +146,34 @@ def evaluate():
         logger.error(f"OpenAI API error: {str(e)}")
         return render_template("result.html",
                              intro=f"OpenAI API error: {str(e)}",
-                             comment_excerpt=comment)
+                             comment_excerpt=comment,
+                             humanity_scale=humanity_scale)  # Pass humanity_scale
     
     except json.JSONDecodeError as e:
-        logger.error(f"JSON parsing error: {str(e)}")
+        logger.error(f"JSON parsing error: {str(e)}. Raw response: {raw_response}")
         return render_template("result.html",
-                             intro="Error: Invalid response format from evaluation.",
-                             comment_excerpt=comment)
+                             intro="Error: Unable to parse evaluation response. Please try again.",
+                             comment_excerpt=comment,
+                             humanity_scale=humanity_scale,  # Pass humanity_scale
+                             scores={},  # Fallback for template
+                             evaluations={},
+                             total_score=0,
+                             final_humanity_score=0,
+                             summary="We couldn’t process this comment, but together we can improve.")
     
     except ValueError as e:
         logger.error(f"Validation error: {str(e)}")
         return render_template("result.html",
                              intro=f"Error: {str(e)}",
-                             comment_excerpt=comment)
+                             comment_excerpt=comment,
+                             humanity_scale=humanity_scale)  # Pass humanity_scale
     
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         return render_template("result.html",
                              intro="Unexpected error occurred during evaluation.",
-                             comment_excerpt=comment)
+                             comment_excerpt=comment,
+                             humanity_scale=humanity_scale)  # Pass humanity_scale
 
 if __name__ == "__main__":
     app.run(debug=True)
