@@ -1,144 +1,136 @@
+
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f7f7f7;
-  margin: 0;
-  padding: 0;
-  color: #333;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
-  max-width: 800px;
-  margin: 30px auto;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 .logo {
-  display: block;
-  margin: 0 auto 20px;
-  width: 200px;
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 160px;
+}
+
+h1, h2, h3 {
+    text-align: center;
+    color: #002d72;
 }
 
 .intro {
-  text-align: center;
-  font-size: 18px;
-  margin-bottom: 20px;
-  color: #555;
+    font-size: 1.2em;
+    text-align: center;
+    margin-bottom: 20px;
 }
 
-.comment-box {
-  background: #f1f1f1;
-  padding: 15px;
-  border-left: 4px solid #007BFF;
-  margin-bottom: 20px;
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+textarea {
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button, input[type="submit"] {
+    background-color: #002d72;
+    color: white;
+    border: none;
+    padding: 10px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover, input[type="submit"]:hover {
+    background-color: #0041b4;
+}
+
+.comment-box, .evaluation-section, .together-section, .summary-section, .humanity-scale-section {
+    margin-top: 20px;
 }
 
 .category-block {
-  background: #f9f9f9;
-  padding: 15px;
-  margin: 10px 0;
-  border-radius: 6px;
-  border-left: 4px solid #888;
+    background: #f9f9f9;
+    padding: 15px;
+    margin: 10px 0;
+    border-left: 4px solid #ccc;
+    border-radius: 5px;
 }
 
 .together-section {
-  border-left: 4px solid #28a745;
-  padding-left: 15px;
-  margin: 30px 0;
-  background: #f4fff4;
-  border-radius: 4px;
+    border-left: 4px solid #28a745;
+    padding-left: 15px;
+    margin-top: 30px;
 }
 
 .summary-section {
-  background: #e9ecef;
-  padding: 15px;
-  border-radius: 6px;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.humanity-scale-section {
-  margin-top: 30px;
+    background: #e9ecef;
+    padding: 15px;
+    border-radius: 6px;
+    text-align: center;
+    font-weight: bold;
 }
 
 .humanity-scale {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
 }
 
 .humanity-item {
-  width: 150px;
-  text-align: center;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background: #fff;
-}
-
-.humanity-item img {
-  width: 80px;
-  height: auto;
-  margin-bottom: 8px;
+    width: 150px;
+    text-align: center;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
 }
 
 .humanity-item.highlight {
-  background: #e6f3ff;
-  border-color: #0056d2;
+    background: #e6f3ff;
+    border-color: #0056d2;
+}
+
+.humanity-item img {
+    width: 80px;
+    height: auto;
+    margin-bottom: 5px;
 }
 
 .back-button {
-  display: inline-block;
-  margin: 30px 0 10px;
-  padding: 10px 20px;
-  background: #002d72;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
-  text-align: center;
+    display: block;
+    width: fit-content;
+    margin: 30px auto;
+    padding: 10px 20px;
+    background-color: #002d72;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
 }
 
-.footer-note {
-  margin-top: 20px;
-  text-align: center;
-  font-size: 14px;
-  color: #666;
+.footer, .footer-note, .social-icons {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 0.9em;
 }
 
-.footer-note a {
-  color: #0056d2;
-  text-decoration: none;
-}
-
-.social-icons {
-  margin-top: 10px;
-  text-align: center;
-}
-
-.social-icons a {
-  margin: 0 10px;
-  font-size: 20px;
-  color: #444;
-}
-
-textarea.textarea {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  margin-bottom: 10px;
-}
-
-button[type="submit"], input[type="submit"] {
-  padding: 10px 20px;
-  font-size: 16px;
-  background: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.footer-note a, .social-icons a {
+    color: #002d72;
+    text-decoration: none;
+    margin: 0 10px;
 }
