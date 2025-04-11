@@ -5,117 +5,49 @@
   <title>TrueFace 3.0 - Reveal the Real</title>
   <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f2f4f8;
-      margin: 0;
-      padding: 40px 20px;
-      display: flex;
-      justify-content: center;
-    }
-
-    .container {
-      background: #fff;
-      max-width: 850px;
-      width: 100%;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-      text-align: center;
-    }
-
-    .logo {
-      width: 384px;
-      display: block;
-      margin: 0 auto 10px;
-    }
-
-    h1 {
-      font-size: 2.1em;
-      margin-bottom: 10px;
-    }
-
-    .intro {
-      font-size: 1.1em;
-      font-weight: bold;
-      color: #0056d2;
-      margin-bottom: 30px;
-    }
-
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      margin-top: 20px;
-    }
-
-    textarea {
-      width: 100%;
-      padding: 15px;
-      font-size: 1em;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      resize: vertical;
-    }
-
-    button {
-      padding: 12px 24px;
-      font-size: 1em;
-      background-color: #002d72;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .footer {
-      margin-top: 50px;
-      font-weight: bold;
-      font-size: 1.1em;
-      color: #222;
-    }
-
-    .footer a {
-      color: #0056d2;
-      text-decoration: none;
-    }
-
-    .social-icons {
-      margin-top: 10px;
-      font-size: 1.4em;
-    }
-
-    .social-icons a {
-      margin: 0 12px;
-      color: #333;
-    }
-  </style>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="container">
-    <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" class="logo">
+    <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" class="logo" alt="TrueFace 3.0 Logo" aria-label="TrueFace 3.0 Logo">
     <h1>TrueFace 3.0</h1>
     <div class="intro">
       TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.
     </div>
 
-    <form action="/evaluate" method="POST">
-      <textarea name="comment" rows="5" placeholder="Paste your comment here..." required></textarea>
-      <textarea name="context" rows="3" placeholder="(Optional) Add context for the comment..."></textarea>
-      <button type="submit">Evaluate</button>
+    <form method="POST" action="{{ url_for('index') }}" id="commentForm">
+      {{ form.hidden_tag() }}
+      {{ form.comment(rows=5, placeholder="Paste your comment here...", class="textarea") }}
+      {{ form.context(rows=3, placeholder="(Optional) Add context for the comment...", class="textarea") }}
+      {{ form.submit(id="submitBtn") }}
     </form>
 
     <div class="footer">
       Want to help us revolutionize social media or explore investment opportunities?<br>
       <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a>
       <div class="social-icons">
-        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
-        <a href="https://twitter.com" target="_blank"><i class="fab fa-x-twitter"></i></a>
-        <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+        <a href="https://facebook.com/TrueFaceWorld" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+        <a href="https://x.com/TrueFaceWorld" target="_blank" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://instagram.com/TrueFaceWorld" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://linkedin.com/company/TrueFaceWorld" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
       </div>
     </div>
   </div>
+
+  <script>
+    const commentBox = document.querySelector('textarea[name="comment"]');
+    commentBox.addEventListener('input', () => {
+      if (commentBox.value.length > 1000) {
+        commentBox.value = commentBox.value.slice(0, 1000);
+        alert('Comment cannot exceed 1000 characters.');
+      }
+    });
+
+    document.getElementById('commentForm').addEventListener('submit', () => {
+      const btn = document.getElementById('submitBtn');
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Evaluating...';
+    });
+  </script>
 </body>
 </html>
