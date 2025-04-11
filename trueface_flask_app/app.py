@@ -1,80 +1,89 @@
-import os
+from flask import Flask, render_template, request
 import openai
-from flask import Flask, render_template, request, jsonify
-from dotenv import load_dotenv
-
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+import json
+import os
 
 app = Flask(__name__)
 
-# Humanity scale mappings
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
 humanity_scale = {
-    0: ("0_cave_echo.png", "Cave Echo"),
-    1: ("1_torch_waver.png", "Torch Waver"),
-    2: ("2_tribal_shouter.png", "Tribal Shouter"),
-    3: ("3_debater.png", "Debater"),
-    4: ("4_bridge_builder.png", "Bridge Builder"),
-    5: ("5_fully_alive.png", "Fully Alive")
+    0: ["0_cave_echo", "Echoing the loudest voices with no reflection"],
+    1: ["1_torch_waver", "Fired up but not fully focused"],
+    2: ["2_tribal_shouter", "Rooted in a side, but not in truth"],
+    3: ["3_debater", "Ready to think, but still sharp-edged"],
+    4: ["4_bridge_builder", "Seeking truth and building unity"],
+    5: ["5_fully_alive", "Truthful, respectful, and fully human"]
 }
 
-def score_to_icon(score):
-    if score >= 20: return humanity_scale[5]
-    elif score >= 15: return humanity_scale[4]
-    elif score >= 10: return humanity_scale[3]
-    elif score >= 5: return humanity_scale[2]
-    else: return humanity_scale[1]
-
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/evaluate', methods=['POST'])
+@app.route("/evaluate", methods=["POST"])
 def evaluate():
-    comment = request.form['comment']
-    context = request.form.get('context', '')
+    comment = request.form.get("comment")
+    context = request.form.get("context", "")
 
     prompt = f"""
-You are TrueFace 3.0, an impartial, truth-seeking AI. Evaluate the COMMENT below in light of the CONTEXT provided. Use a 0–5 scale for each category, followed by a short paragraph. Focus on truth, logic, and human dignity.
+You are TrueFace 3.0, an AI model designed to evaluate online comments for their contribution to public conversation. Given the comment and any context, assess the comment on these five dimensions (scored 0–5):
 
-COMMENT: {comment}
-CONTEXT: {context}
+1. Emotional Proportion
+2. Personal Attribution
+3. Cognitive Openness
+4. Moral Posture
+5. Interpretive Complexity
 
-Return JSON with:
-1. intro
-2. comment_excerpt
-3. evaluations (Emotional Proportion, Personal Attribution, Cognitive Openness, Moral Posture, Interpretive Complexity)
-4. scores (each category 0–5)
-5. together_we_are_all_stronger (a short reflection paragraph)
-6. total_score (sum of the five categories)
+Return JSON with this structure:
+{{
+  "intro": "...",
+  "comment_excerpt": "...",
+  "evaluations": {{
+    "Emotional Proportion": "...",
+    "Personal Attribution": "...",
+    "Cognitive Openness": "...",
+    "Moral Posture": "...",
+    "Interpretive Complexity": "..."
+  }},
+  "scores": {{
+    "Emotional Proportion": 1,
+    "Personal Attribution": 2,
+    "Cognitive Openness": 3,
+    "Moral Posture": 4,
+    "Interpretive Complexity": 5
+  }},
+  "together_we_are_all_stronger": "...",
+  "total_score": 15
+}}
+Context: {context}
+Comment: {comment}
 """
 
     try:
-        response = openai.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-4",
-            messages=[
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.5
+            messages=[{"role": "user", "content": prompt}]
         )
+        ai_response = response.choices[0].message.content.strip()
 
-        ai_reply = response.choices[0].message.content.strip()
-        json_start = ai_reply.find('{')
-        json_data = ai_reply[json_start:]
+        json_start = ai_response.find('{')
+        json_str = ai_response[json_start:]
+        data = json.loads(json_str)
 
-        import json
-        data = json.loads(json_data)
+        # Auto-calculate score if missing
+        if isinstance(data, dict) and "total_score" not in data:
+            scores = data.get("scores", {})
+            data["total_score"] = sum(scores.values())
 
-        # Fallback score if total is not provided
-        if "total_score" not in data:
-            data["total_score"] = sum(data["scores"].values())
-
-        data["icon_path"], data["icon_name"] = score_to_icon(data["total_score"])
-        return render_template('result.html', **data)
+        return render_template("result.html", **data, humanity_scale=humanity_scale)
 
     except Exception as e:
         print("ERROR:", e)
-        return render_template('result.html', intro="There was an error processing your evaluation.", comment_excerpt=comment)
-
-if __name__ == '__main__':
-    app.run(debug=True)
+        return render_template("result.html",
+                               intro="There was an error processing your evaluation.",
+                               comment_excerpt=comment,
+                               evaluations={},
+                               scores={},
+                               together_we_are_all_stronger=str(e),
+                               total_score=0,
+                               humanity_scale=humanity_scale)
