@@ -1,93 +1,60 @@
-
+/* Base styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 1.2em; /* Increased base font size (was ~1em) */
+    background-color: #f2f4f8;
     margin: 0;
-    padding: 0;
-    background: #f5f6fa;
-    color: #333;
-}
-
-.container {
-    max-width: 800px;
-    margin: 0 auto;
     padding: 40px 20px;
-    background: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border-radius: 8px;
+    display: flex;
+    justify-content: center;
 }
 
+/* Container for all content */
+.container {
+    background: #fff;
+    max-width: 900px; /* Slightly wider for better spacing */
+    width: 100%;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo styling */
 .logo {
-    max-width: 200px;
+    width: 450px; /* Increased from 384px */
     display: block;
     margin: 0 auto 20px;
 }
 
-h1, h2, h3 {
-    text-align: center;
-    color: #0056d2;
-}
-
+/* Intro text */
 .intro {
-    text-align: center;
-    font-size: 1.1em;
+    font-size: 1.4em; /* Increased for readability */
+    font-weight: bold;
+    color: #0056d2;
     margin-bottom: 30px;
-    color: #555;
-}
-
-textarea {
-    width: 100%;
-    font-size: 1em;
-    padding: 12px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    resize: vertical;
-}
-
-button, input[type=submit] {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    background-color: #0056d2;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 1em;
-    cursor: pointer;
-}
-
-button:disabled {
-    background-color: #999;
-}
-
-.footer, .footer-note {
     text-align: center;
-    margin-top: 30px;
-    font-size: 0.9em;
-    color: #777;
 }
 
-.footer a, .footer-note a {
-    color: #0056d2;
-    text-decoration: none;
+/* Comment box */
+.comment-box {
+    background-color: #eef;
+    padding: 16px;
+    border-left: 6px solid #88f;
+    font-style: italic;
+    margin-bottom: 30px;
 }
 
-.social-icons {
-    margin-top: 10px;
+.comment-box strong {
+    font-size: 1.3em;
 }
 
-.social-icons a {
-    margin: 0 10px;
-    color: #0056d2;
+.comment-box p {
     font-size: 1.2em;
 }
 
-.comment-box {
-    background: #f1f1f1;
-    padding: 15px;
-    margin: 20px 0;
-    border-left: 5px solid #0056d2;
-    border-radius: 6px;
+/* Evaluation section */
+.evaluation-section {
+    margin-bottom: 30px;
 }
 
 .category-block {
@@ -98,56 +65,181 @@ button:disabled {
     text-align: left;
 }
 
+.category-block h3 {
+    display: flex;
+    align-items: center;
+    font-size: 1.5em; /* Increased */
+    margin-bottom: 10px;
+}
+
+.category-icon {
+    width: 40px; /* Size for category icons */
+    height: auto;
+    margin-right: 10px;
+}
+
+.category-block p {
+    font-size: 1.2em; /* Increased */
+}
+
+/* Together section */
 .together-section {
     border-left: 4px solid #28a745;
     padding-left: 15px;
     margin: 20px 0;
 }
 
+.together-section h3 {
+    font-size: 1.5em; /* Increased */
+}
+
+.together-section p {
+    font-size: 1.2em;
+}
+
+/* Summary section */
 .summary-section {
     background: #e9ecef;
     padding: 15px;
     border-radius: 6px;
     text-align: center;
+    margin-bottom: 30px;
 }
 
+.summary-section h3 {
+    font-size: 1.5em; /* Increased */
+}
+
+.summary-section p {
+    font-size: 1.2em;
+}
+
+/* Humanity scale section */
 .humanity-scale-section {
-    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.humanity-scale-section h2 {
+    font-size: 1.8em; /* Increased */
+    text-align: center;
+    margin-bottom: 20px;
 }
 
 .humanity-scale {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
+    gap: 20px;
+    background: #fafafa;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
 }
 
 .humanity-item {
-    width: 150px;
+    width: 160px; /* Slightly larger for clarity */
     text-align: center;
-    padding: 10px;
+    padding: 15px;
     border: 1px solid #ddd;
     border-radius: 6px;
-    margin: 10px;
-    background: #fff;
 }
 
 .humanity-item img {
     width: 80px;
     height: auto;
+    margin-bottom: 10px;
 }
 
-.highlight {
+.humanity-item strong {
+    font-size: 1.2em;
+}
+
+.humanity-item p {
+    font-size: 1em; /* Slightly larger */
+}
+
+.humanity-item.highlight {
     background: #e6f3ff;
     border-color: #0056d2;
 }
 
-.back-button {
+/* Button group */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.back-button, .copy-button {
     display: inline-block;
-    margin: 20px auto;
-    padding: 10px 20px;
-    background: #002d72;
+    padding: 12px 24px;
+    font-size: 1.2em;
+    background-color: #002d72;
     color: white;
     text-decoration: none;
     border-radius: 6px;
+    cursor: pointer;
+    border: none;
+}
+
+.copy-button:hover, .back-button:hover {
+    background-color: #0056d2;
+}
+
+/* Footer note */
+.footer-note {
     text-align: center;
+    font-size: 1.5em; /* Increased for prominence */
+    font-weight: bold;
+    margin: 30px 0;
+    padding: 15px;
+    background: #e6f3ff;
+    border-radius: 8px;
+}
+
+.footer-note a {
+    color: #0056d2;
+    text-decoration: underline;
+}
+
+/* Social icons */
+.social-icons {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.8em; /* Increased from 1.4em */
+}
+
+.social-icons a {
+    margin: 0 15px; /* Slightly more spacing */
+    color: #333;
+    text-decoration: none;
+}
+
+.social-icons a:hover {
+    color: #0056d2;
+}
+
+/* Form styles (for index.html compatibility) */
+.textarea {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em; /* Match larger font */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+}
+
+button[type="submit"] {
+    padding: 12px 24px;
+    font-size: 1.2em;
+    background-color: #002d72;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056d2;
 }
