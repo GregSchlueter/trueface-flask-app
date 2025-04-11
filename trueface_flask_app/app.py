@@ -4,95 +4,87 @@ import os
 
 app = Flask(__name__)
 
-# Set your OpenAI API key securely
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Humanity scale mapping
+# Humanity scale dictionary
 humanity_scale = {
-    0: ("0_cave_echo.png", "Cave Echo", "Echoes outrage with no original thought."),
-    1: ("1_torch_waver.png", "Torch Waver", "Signals heat, but sheds little light."),
-    2: ("2_tribal_shouter.png", "Tribal Shouter", "Rallies the crowd, not the cause."),
-    3: ("3_debater.png", "Debater", "Engages logically but may lack empathy."),
-    4: ("4_bridge_builder.png", "Bridge Builder", "Pursues truth and mutual respect."),
-    5: ("5_fully_alive.png", "Fully Alive", "Embodies truth, humility, and love.")
+    0: ("0_cave_echo", "Cave Echo", "Echoes others without engagement"),
+    1: ("1_torch_waver", "Torch Waver", "Flares up, but offers little light"),
+    2: ("2_tribal_shouter", "Tribal Shouter", "Stands with the tribe, not the truth"),
+    3: ("3_debater", "Debater", "Raises ideas, but not always people"),
+    4: ("4_bridge_builder", "Bridge Builder", "Connects people through clarity"),
+    5: ("5_fully_alive", "Fully Alive", "Speaks truth with love and courage")
 }
 
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/evaluate', methods=['POST'])
+@app.route("/evaluate", methods=["POST"])
 def evaluate():
-    comment = request.form['comment']
-    context = request.form.get('context', '')
+    comment = request.form["comment"]
+    context = request.form.get("context", "")
 
     try:
-        system_message = {
-            "role": "system",
-            "content": "Evaluate the COMMENT in light of the CONTEXT using these five categories: Emotional Proportion, Personal Attribution, Cognitive Openness, Moral Posture, Interpretive Complexity. Provide a short paragraph and a score (0-5) for each."
-        }
-
-        user_message = {
-            "role": "user",
-            "content": f"CONTEXT: {context}\n\nCOMMENT: {comment}"
-        }
-
+        # Call OpenAI
         response = openai.chat.completions.create(
             model="gpt-4",
-            messages=[system_message, user_message],
-            temperature=0.3
+            messages=[
+                {"role": "system", "content": "You are an AI that evaluates social media comments on five dimensions..."},
+                {"role": "user", "content": f"Context: {context}\nComment: {comment}"}
+            ]
         )
 
-        raw = response.choices[0].message.content
-        lines = raw.split("\n")
+        response_text = response.choices[0].message.content.strip()
 
+        # Parse scores and evaluations
+        lines = response_text.split("\n")
         evaluations = {}
         scores = {}
-        current_category = None
+        current_key = None
 
         for line in lines:
-            if any(label in line for label in ["Emotional Proportion", "Personal Attribution", "Cognitive Openness", "Moral Posture", "Interpretive Complexity"]):
-                parts = line.split(":")
-                if len(parts) >= 2:
-                    category = parts[0].strip(" 🧠🎯🧩❤️🔍")
-                    score = int(parts[1].strip().split("/")[0])
-                    scores[category] = score
-                    current_category = category
-            elif current_category and line.strip():
-                evaluations[current_category] = evaluations.get(current_category, '') + ' ' + line.strip()
+            if line.startswith("**"):
+                key = line.split("**")[1].strip(":")
+                score = int(line.split(":")[2].strip().split("/")[0])
+                scores[key] = score
+                current_key = key
+                evaluations[key] = ""
+            elif current_key:
+                evaluations[current_key] += line.strip() + " "
 
+        # Handle Together We Are Better and Final Score
+        together = next((line for line in lines if "Together we are better" in line), "")
         total_score = sum(scores.values())
 
-        # Final summary generation
-        summary_prompt = f"""Write a concise paragraph for 'Together We Are Better' in light of the context and the comment: '{comment}'. 
-        Be candid but kind, logically insightful, and reference if appropriate the tendency toward exaggeration, bias, or missed nuance. 
-        End with: 'Together we are better.'"""
+        # Final humanity score for icon display
+        if total_score <= 4:
+            humanity_level = 0
+        elif total_score <= 9:
+            humanity_level = 1
+        elif total_score <= 14:
+            humanity_level = 2
+        elif total_score <= 19:
+            humanity_level = 3
+        elif total_score <= 24:
+            humanity_level = 4
+        else:
+            humanity_level = 5
 
-        summary_response = openai.chat.completions.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a wise and charitable assistant helping people reflect deeply on public discourse."},
-                {"role": "user", "content": summary_prompt}
-            ],
-            temperature=0.3
-        )
-
-        together_we_are_all_stronger = summary_response.choices[0].message.content
-
-        return render_template(
-            'result.html',
-            intro="Below is a TrueFace 3.0 evaluation of your comment.",
+        return render_template("result.html",
+            intro="Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, and human dignity.",
             comment_excerpt=comment,
-            scores=scores,
             evaluations=evaluations,
+            scores=scores,
             total_score=total_score,
-            together_we_are_all_stronger=together_we_are_all_stronger,
+            together=together,
+            humanity_level=humanity_level,
             humanity_scale=humanity_scale
         )
 
     except Exception as e:
-        print("ERROR:", str(e))
-        return render_template('result.html', intro="There was an error processing your evaluation.", comment_excerpt=comment)
+        print("ERROR:", e)
+        return render_template("result.html", intro="There was an error processing your evaluation.", comment_excerpt=comment)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
