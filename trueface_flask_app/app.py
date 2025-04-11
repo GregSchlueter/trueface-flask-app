@@ -1,32 +1,20 @@
-
 from flask import Flask, render_template, request
 import openai
 import os
 import json
 
 app = Flask(__name__)
-
-# Set your OpenAI API key
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-def get_trueface_evaluation(comment, context):
-    prompt = f"""Evaluate the following comment in the context of public discourse:
-
-Context: {context}
-
-Comment: {comment}
-
-Return a JSON object with five evaluation categories (Emotional Proportion, Personal Attribution, Cognitive Openness, Moral Posture, Interpretive Complexity) each with a score (0-5) and short explanation. Also include a 'together_we_are_all_stronger' paragraph.
-    """
-    response = openai.chat.completions.create(
-        model="gpt-4",
-        messages=[
-            {"role": "system", "content": "You are an impartial evaluator for public discourse."},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.4
-    )
-    return response.choices[0].message.content.strip()
+# Humanity scale config (ensure 3 items per tuple)
+humanity_scale = {
+    0: ("0_cave_echo", "Cave Echo", "Grunts in the dark. No light, no lift."),
+    1: ("1_torch_waver", "Torch Waver", "Throws light, but mostly heat."),
+    2: ("2_tribal_shouter", "Tribal Shouter", "Chants, but doesn't check facts."),
+    3: ("3_debater", "Debater", "Sharp, fair, not always aware."),
+    4: ("4_bridge_builder", "Bridge Builder", "Listens hard. Connects dots and people."),
+    5: ("5_fully_alive", "Fully Alive", "Truth in love. Humanity wins.")
+}
 
 @app.route("/")
 def index():
@@ -34,64 +22,90 @@ def index():
 
 @app.route("/evaluate", methods=["POST"])
 def evaluate():
-    comment = request.form.get("comment", "")
+    comment = request.form["comment"]
     context = request.form.get("context", "")
 
+    prompt = f"""Evaluate the following COMMENT in light of its CONTEXT:
+---
+COMMENT: "{comment}"
+CONTEXT: "{context}"
+---
+Respond in this strict JSON format:
+
+{{
+  "evaluations": {{
+    "Emotional Proportion": "...",
+    "Personal Attribution": "...",
+    "Cognitive Openness": "...",
+    "Moral Posture": "...",
+    "Interpretive Complexity": "..."
+  }},
+  "scores": {{
+    "Emotional Proportion": 1-5,
+    "Personal Attribution": 1-5,
+    "Cognitive Openness": 1-5,
+    "Moral Posture": 1-5,
+    "Interpretive Complexity": 1-5
+  }},
+  "together_we_are_all_stronger": "...",
+  "summary": "..."
+}}"""
+
     try:
-        ai_response = get_trueface_evaluation(comment, context)
-        json_start = ai_response.find('{')
-        json_end = ai_response.rfind('}') + 1
-        ai_json = ai_response[json_start:json_end]
-        data = json.loads(ai_json)
+        response = openai.chat.completions.create(
+            model="gpt-4",
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.5,
+        )
+
+        # Extract JSON from response
+        full_text = response.choices[0].message.content
+        json_start = full_text.find("{")
+        json_end = full_text.rfind("}") + 1
+        json_content = full_text[json_start:json_end]
+        data = json.loads(json_content)
 
         scores = data["scores"]
         total_score = sum(scores.values())
 
-        if total_score < 5:
-            total_score_icon = "0_cave_echo"
-        elif total_score < 10:
-            total_score_icon = "1_torch_waver"
-        elif total_score < 15:
-            total_score_icon = "2_tribal_shouter"
-        elif total_score < 20:
-            total_score_icon = "3_debater"
-        elif total_score < 25:
-            total_score_icon = "4_bridge_builder"
+        # Determine final humanity icon (0-5) from total
+        if total_score <= 4:
+            final_icon = 0
+        elif total_score <= 9:
+            final_icon = 1
+        elif total_score <= 14:
+            final_icon = 2
+        elif total_score <= 19:
+            final_icon = 3
+        elif total_score <= 24:
+            final_icon = 4
         else:
-            total_score_icon = "5_fully_alive"
-
-        humanity_scale = {
-            0: ("0_cave_echo", "Cave Echo", "Repeats what it hears. No reflection."),
-            1: ("1_torch_waver", "Torch Waver", "Flares up, but not sure where it’s going."),
-            2: ("2_tribal_shouter", "Tribal Shouter", "Loyal but loud, heat over light."),
-            3: ("3_debater", "Debater", "Engages thoughtfully, but still battles."),
-            4: ("4_bridge_builder", "Bridge Builder", "Connects minds and hearts across differences."),
-            5: ("5_fully_alive", "Fully Alive", "Seeks truth with love. Honors others."),
-        }
-
-        category_icons = {
-            "Emotional Proportion": "fa-brain",
-            "Personal Attribution": "fa-bullseye",
-            "Cognitive Openness": "fa-puzzle-piece",
-            "Moral Posture": "fa-heart",
-            "Interpretive Complexity": "fa-magnifying-glass"
-        }
+            final_icon = 5
 
         return render_template(
             "result.html",
+            intro="Below is a TrueFace evaluation of your comment.",
             comment_excerpt=comment,
             evaluations=data["evaluations"],
             scores=scores,
             total_score=total_score,
-            together_we_are_all_stronger=data["together_we_are_all_stronger"],
-            humanity_scale=humanity_scale,
-            total_score_icon=total_score_icon,
-            category_icons=category_icons
+            together=data["together_we_are_all_stronger"],
+            summary=data.get("summary", ""),
+            final_icon=final_icon,
+            humanity_scale=humanity_scale
         )
 
     except Exception as e:
         print("ERROR:", str(e))
-        return render_template("result.html", intro="There was an error processing your evaluation.", comment_excerpt=comment)
-
-if __name__ == "__main__":
-    app.run(debug=True)
+        return render_template(
+            "result.html",
+            intro="There was an error processing your evaluation.",
+            comment_excerpt=comment,
+            evaluations={},
+            scores={},
+            total_score=0,
+            together="We hit a snag. Try again soon!",
+            summary="",
+            final_icon=0,
+            humanity_scale=humanity_scale
+        )
