@@ -72,30 +72,26 @@
         </div>
 
         <div class="social-icons">
-            <a href="https://facebook.com/TrueFaceWorld" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://x.com/TrueFaceWorld" target="_blank" aria-label="X"><i class="fab fa-x-twitter"></i></a>
-            <a href="https://instagram.com/TrueFaceWorld" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://linkedin.com/company/TrueFaceWorld" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}&quote=Evaluate%20your%20social%20world%20at%20TrueFaceWorld.com%20%7C%20%22Reveal%20the%20Real%22" target="_blank" aria-label="Share on Facebook"><i class="fas fa-share"></i></a>
+            <a href="https://twitter.com/intent/tweet?url={{ request.url|urlencode }}&text=Evaluate%20your%20social%20world%20at%20TrueFaceWorld.com%20%7C%20%22Reveal%20the%20Real%22" target="_blank" aria-label="Share on X"><i class="fas fa-share"></i></a>
+            <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram (Share not directly supported)"><i class="fas fa-share"></i></a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.url|urlencode }}&title=Evaluate%20your%20social%20world%20at%20TrueFaceWorld.com%20%7C%20%22Reveal%20the%20Real%22" target="_blank" aria-label="Share on LinkedIn"><i class="fas fa-share"></i></a>
         </div>
     </div>
 
     {% if scores and evaluations %}
     <script>
         function copyResults() {
-            const text = `
-Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, clarity, and human dignity.\n\n
-Comment: {{ comment_excerpt }}\n
-{% for category, score in scores.items() %}
-${category}: ${score}/5 - {{ evaluations[category] | replace('\n', ' ') }}\n
-{% endfor %}
-Together We Are Better: {{ summary | replace('\n', ' ') }} Together we are better.\n
-Final Score: {{ total_score }}/25\n
-Humanity Rank: {{ humanity_scale[final_humanity_score][1] }}\n
-\nLearn more at https://truefaceworld.com
-            `.trim();
+            const text = `Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, clarity, and human dignity.\n\n` +
+                `Comment: {{ comment_excerpt|e }}\n` +
+                `{% for category, score in scores.items() %}${category}: ${score}/5 - {{ evaluations[category]|e|replace('\n', ' ') }}\n{% endfor %}` +
+                `Together We Are Better: {{ summary|e|replace('\n', ' ') }} Together we are better.\n` +
+                `Final Score: {{ total_score }}/25\n` +
+                `Humanity Rank: {{ humanity_scale[final_humanity_score][1]|e }}\n` +
+                `\nLearn more at https://truefaceworld.com`;
             navigator.clipboard.writeText(text)
                 .then(() => alert('Results copied to clipboard!'))
-                .catch(() => alert('Failed to copy results.'));
+                .catch(() => alert('Failed to copy results. Please try again.'));
         }
     </script>
     {% endif %}
