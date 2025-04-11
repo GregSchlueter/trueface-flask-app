@@ -1,12 +1,19 @@
 import os
-from flask import Flask, request, render_template
-from openai import OpenAI
+import json
+import logging
+import bleach
+from flask import Flask, request, render_template, url_for, redirect
+from openai import OpenAI, OpenAIError
 from dotenv import load_dotenv
 
 load_dotenv()
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'fallback-secret')
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 @app.route('/')
 def index():
@@ -14,18 +21,31 @@ def index():
 
 @app.route('/evaluate', methods=['POST'])
 def evaluate():
-    comment = request.form['comment']
-    context = request.form.get('context', '')
+    comment = bleach.clean(request.form.get('comment', ''))
+    context = bleach.clean(request.form.get('context', ''))
+
+    logger.info(f"Evaluating comment: {comment[:50]}...")
 
     try:
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant trained to analyze and score comments."},
-                {"role": "user", "content": f"Evaluate the following comment in context: '{context}' and the comment: '{comment}'."}
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant trained to analyze and score comments. Return a JSON object with keys 'scores', 'evaluations', and 'together_we_are_all_stronger'."
+                },
+                {
+                    "role": "user",
+                    "content": f"Evaluate the following comment in context: '{context}' and the comment: '{comment}'"
+                }
             ]
         )
-        data = eval(response.choices[0].message.content)
+
+        data = json.loads(response.choices[0].message.content)
+
+        required_keys = ['scores', 'evaluations', 'together_we_are_all_stronger']
+        if not all(key in data for key in required_keys):
+            raise ValueError("Invalid response format")
 
         scores = data["scores"]
         evaluations = data["evaluations"]
@@ -45,18 +65,25 @@ def evaluate():
 
         return render_template(
             "result.html",
+            intro="TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.",
             comment_excerpt=comment[:160] + "..." if len(comment) > 160 else comment,
             scores=scores,
             evaluations=evaluations,
             total_score=total_score,
             final_humanity_score=final_humanity_score,
             humanity_scale=humanity_scale,
-            summary=summary,
-            intro="TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity."
+            summary=summary
         )
+
+    except OpenAIError as e:
+        logger.error(f"OpenAI API error: {e}")
+        return render_template("result.html", intro=f"OpenAI API error: {str(e)}", comment_excerpt=comment)
+    except (json.JSONDecodeError, ValueError) as e:
+        logger.error(f"Response parsing error: {e}")
+        return render_template("result.html", intro=f"Error processing evaluation: {str(e)}", comment_excerpt=comment)
     except Exception as e:
-        print("ERROR:", e)
-        return render_template("result.html", intro="There was an error processing your evaluation.", comment_excerpt=comment)
+        logger.error(f"Unexpected error: {e}")
+        return render_template("result.html", intro="Unexpected error occurred.", comment_excerpt=comment)
 
 if __name__ == "__main__":
     app.run(debug=True)
