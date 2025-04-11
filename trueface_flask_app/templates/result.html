@@ -12,11 +12,12 @@
         <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace 3.0 Logo" class="logo" aria-label="TrueFace 3.0 Logo">
         <p class="intro">{{ intro }}</p>
 
+        {% if humanity_scale %}
         <div class="humanity-scale-section">
             <h2>Humanity Scale</h2>
             <div class="humanity-scale">
                 {% for num, (img, label, desc) in humanity_scale.items() %}
-                <div class="humanity-item {% if num == final_humanity_score %}highlight{% endif %}">
+                <div class="humanity-item {% if num == final_humanity_score|default(0) %}highlight{% endif %}">
                     <img src="{{ url_for('static', filename='images/' + img + '.png') }}" alt="{{ label }}">
                     <strong>{{ num }} - {{ label }}</strong>
                     <p>{{ desc }}</p>
@@ -24,17 +25,19 @@
                 {% endfor %}
             </div>
         </div>
+        {% endif %}
 
         <div class="comment-box">
             <strong>Comment:</strong>
             <p>{{ comment_excerpt }}</p>
         </div>
 
+        {% if scores and evaluations %}
         <div class="evaluation-section">
             {% for category, score in scores.items() %}
             <div class="category-block">
                 <h3>
-                    <img src="{{ url_for('static', filename='images/' + humanity_scale[score][0] + '.png') }}" alt="{{ humanity_scale[score][1] }} Icon" class="category-icon">
+                    <img src="{{ url_for('static', filename='images/' + humanity_scale[score|default(0)][0] + '.png') }}" alt="{{ humanity_scale[score|default(0)][1] }} Icon" class="category-icon">
                     {{ category }}: {{ score }}/5
                 </h3>
                 <p>{{ evaluations[category] }}</p>
@@ -51,10 +54,13 @@
             <h3>🧾 Final Summary Score: {{ total_score }}/25</h3>
             <p>Your comment ranks as: {{ humanity_scale[final_humanity_score][1] }}</p>
         </div>
+        {% endif %}
 
         <div class="button-group">
             <a href="{{ url_for('index') }}" class="back-button">Evaluate Another Comment</a>
+            {% if scores and evaluations %}
             <button onclick="copyResults()" class="copy-button">Copy Results</button>
+            {% endif %}
         </div>
 
         <div class="footer-note">
@@ -69,6 +75,7 @@
         </div>
     </div>
 
+    {% if scores and evaluations %}
     <script>
         function copyResults() {
             const text = `
@@ -87,5 +94,6 @@ Humanity Rank: {{ humanity_scale[final_humanity_score][1] }}\n
                 .catch(() => alert('Failed to copy results.'));
         }
     </script>
+    {% endif %}
 </body>
 </html>
