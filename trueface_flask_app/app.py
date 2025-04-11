@@ -1,12 +1,14 @@
-from flask import Flask, render_template, request
-import openai
 import os
+import openai
+from flask import Flask, request, render_template
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Humanity scale dictionary
 humanity_scale = {
     0: ("0_cave_echo", "Cave Echo", "Echoes others without engagement"),
     1: ("1_torch_waver", "Torch Waver", "Flares up, but offers little light"),
@@ -16,75 +18,60 @@ humanity_scale = {
     5: ("5_fully_alive", "Fully Alive", "Speaks truth with love and courage")
 }
 
-@app.route("/")
+@app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template('index.html')
 
-@app.route("/evaluate", methods=["POST"])
+@app.route('/evaluate', methods=['POST'])
 def evaluate():
-    comment = request.form["comment"]
-    context = request.form.get("context", "")
+    comment = request.form['comment']
+    context = request.form.get('context', '')
+
+    prompt = f"""
+    Evaluate the following comment using the TrueFace 3.0 model, responding with a JSON object containing:
+    - intro
+    - comment_excerpt
+    - evaluations: a dictionary with each category and a description
+    - scores: a dictionary with each category and a number from 0–5
+    - together_we_are_all_stronger: a wise summary
+    - total_score (if not present, calculate from scores)
+
+    Comment: {comment}
+    Context: {context}
+    """
 
     try:
-        # Call OpenAI
         response = openai.chat.completions.create(
             model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are an AI that evaluates social media comments on five dimensions..."},
-                {"role": "user", "content": f"Context: {context}\nComment: {comment}"}
-            ]
+            messages=[{"role": "user", "content": prompt}],
+            temperature=0.7
         )
 
-        response_text = response.choices[0].message.content.strip()
+        ai_text = response.choices[0].message.content.strip()
+        json_start = ai_text.find('{')
+        json_data = ai_text[json_start:]
+        data = eval(json_data)
 
-        # Parse scores and evaluations
-        lines = response_text.split("\n")
-        evaluations = {}
-        scores = {}
-        current_key = None
-
-        for line in lines:
-            if line.startswith("**"):
-                key = line.split("**")[1].strip(":")
-                score = int(line.split(":")[2].strip().split("/")[0])
-                scores[key] = score
-                current_key = key
-                evaluations[key] = ""
-            elif current_key:
-                evaluations[current_key] += line.strip() + " "
-
-        # Handle Together We Are Better and Final Score
-        together = next((line for line in lines if "Together we are better" in line), "")
-        total_score = sum(scores.values())
-
-        # Final humanity score for icon display
-        if total_score <= 4:
-            humanity_level = 0
-        elif total_score <= 9:
-            humanity_level = 1
-        elif total_score <= 14:
-            humanity_level = 2
-        elif total_score <= 19:
-            humanity_level = 3
-        elif total_score <= 24:
-            humanity_level = 4
+        if isinstance(data, dict):
+            if "total_score" not in data:
+                data["total_score"] = sum(data["scores"].values())
         else:
-            humanity_level = 5
+            raise ValueError("Unexpected response format.")
 
-        return render_template("result.html",
-            intro="Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, and human dignity.",
-            comment_excerpt=comment,
-            evaluations=evaluations,
-            scores=scores,
-            total_score=total_score,
-            together=together,
-            humanity_level=humanity_level,
+        return render_template(
+            'result.html',
+            intro=data.get("intro", ""),
+            comment_excerpt=data.get("comment_excerpt", comment),
+            evaluations=data.get("evaluations", {}),
+            scores=data.get("scores", {}),
+            together_we_are_all_stronger=data.get("together_we_are_all_stronger", ""),
+            total_score=data.get("total_score", 0),
             humanity_scale=humanity_scale
         )
 
     except Exception as e:
-        print("ERROR:", e)
-        return render_template("result.html", intro="There was an error processing your evaluation.", comment_excerpt=comment)
+        print(f"ERROR: {e}")
+        return render_template('result.html', intro="There was an error processing your evaluation.", comment_excerpt=comment)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run(debug=True)
