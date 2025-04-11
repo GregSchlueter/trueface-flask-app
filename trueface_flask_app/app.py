@@ -10,7 +10,6 @@ from openai import OpenAI, OpenAIError
 from urllib.parse import quote, unquote
 from dotenv import load_dotenv
 
-# Load environment variables
 load_dotenv()
 
 app = Flask(__name__)
@@ -37,7 +36,6 @@ def index():
 
 @app.route('/evaluate', methods=['GET'])
 def evaluate():
-    # Decode URL-encoded inputs before sanitizing
     comment = bleach.clean(unquote(request.args.get('comment', '')))
     context = bleach.clean(unquote(request.args.get('context', '')))
 
@@ -66,17 +64,21 @@ def evaluate():
                 {
                     "role": "system",
                     "content": (
-                        "You are an analytical assistant trained to evaluate comments. "
+                        "You are an analytical assistant trained to evaluate comments with wisdom, charity, and psychological insight. "
                         "Respond ONLY with a valid JSON object containing three keys: "
                         "'scores' (a dictionary with categories 'Clarity', 'Empathy', 'Logic', 'Respect', 'Constructiveness' and integer scores 0-5), "
-                        "'evaluations' (a dictionary with the same categories and string explanations), "
-                        "and 'together_we_are_all_stronger' (a summary string encouraging constructive dialogue). "
-                        "Do not include any text outside the JSON object. Example: "
+                        "'evaluations' (a dictionary with the same categories and concise string explanations), "
+                        "and 'together_we_are_all_stronger' (a detailed, constructive string offering wise, direct feedback). "
+                        "For 'together_we_are_all_stronger', identify logical flaws, confirmation bias, or errors of judgment; address factual claims with objective insight; "
+                        "suggest specific improvements and explain their importance for fostering meaningful relationships, grounded in psychology, virtue, and goodwill. "
+                        "Do not include text outside the JSON object. Example: "
                         '{"scores": {"Clarity": 4, "Empathy": 3, "Logic": 4, "Respect": 2, "Constructiveness": 3}, '
                         '"evaluations": {"Clarity": "Clear points made.", "Empathy": "Some understanding shown.", '
                         '"Logic": "Reasoning is solid.", "Respect": "Tone could be more respectful.", '
-                        '"Constructiveness": "Offers critique but lacks solutions."}, '
-                        '"together_we_are_all_stronger": "Let’s focus on constructive ideas to unite us."}'
+                        '"Constructiveness": "Critiques but lacks solutions."}, '
+                        '"together_we_are_all_stronger": "Your passion is clear, but the argument leans on hyperbole, risking confirmation bias by assuming intent without evidence. '
+                        'Consider grounding claims in verifiable facts—e.g., specific quotes or events—and inviting dialogue with questions rather than assertions. '
+                        'This builds trust and understanding, key to relationships, as psychology shows we connect best through mutual respect and curiosity."}'
                     )
                 },
                 {
