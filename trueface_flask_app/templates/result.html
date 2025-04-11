@@ -47,7 +47,7 @@
 
         <div class="together-section">
             <h3>🌿 Together We Are Better</h3>
-            <p>{{ summary }}</p>
+            <p>{{ summary }} <strong>Together we are better.</strong></p>
         </div>
 
         <div class="summary-section">
@@ -61,6 +61,10 @@
             {% if scores and evaluations %}
             <button onclick="copyResults()" class="copy-button">Copy Results</button>
             {% endif %}
+        </div>
+
+        <div class="contact-info">
+            Contact with suggestions and for investment opportunities: <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a>
         </div>
 
         <div class="footer-note">
@@ -79,12 +83,12 @@
     <script>
         function copyResults() {
             const text = `
-TrueFace 3.0 Evaluation\n\n
+Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, clarity, and human dignity.\n\n
 Comment: {{ comment_excerpt }}\n
 {% for category, score in scores.items() %}
 ${category}: ${score}/5 - {{ evaluations[category] | replace('\n', ' ') }}\n
 {% endfor %}
-Together We Are Better: {{ summary | replace('\n', ' ') }}\n
+Together We Are Better: {{ summary | replace('\n', ' ') }} Together we are better.\n
 Final Score: {{ total_score }}/25\n
 Humanity Rank: {{ humanity_scale[final_humanity_score][1] }}\n
 \nLearn more at https://truefaceworld.com
