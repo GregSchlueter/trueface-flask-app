@@ -1,17 +1,16 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>TrueFace 3.0 Evaluation</title>
-    <link rel="icon" href="/static/images/favicon.png" type="image/png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <link rel="stylesheet" href="/static/style.css">
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <img src="/static/images/TrueFace3.png" alt="TrueFace Logo" class="logo">
-        <p class="intro-text"><strong>TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.</strong></p>
+        <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" alt="TrueFace 3.0 Logo" class="logo" aria-label="TrueFace 3.0 Logo">
+        <p class="intro">{{ intro }}</p>
 
         <div class="comment-box">
             <strong>Comment:</strong>
@@ -29,20 +28,20 @@
 
         <div class="together-section">
             <h3>🌿 Together We Are Better</h3>
-            <p>{{ together_message }}</p>
+            <p>{{ summary }}</p>
         </div>
 
         <div class="summary-section">
             <h3>🧾 Final Summary Score: {{ total_score }}/25</h3>
-            <p>{{ final_summary }}</p>
+            <p>Your comment ranks as: {{ humanity_scale[final_humanity_score][1] }}</p>
         </div>
 
         <div class="humanity-scale-section">
             <h2>Humanity Scale</h2>
             <div class="humanity-scale">
                 {% for num, (img, label, desc) in humanity_scale.items() %}
-                <div class="humanity-item">
-                    <img src="/static/images/{{ img }}" alt="{{ label }}">
+                <div class="humanity-item {% if num == final_humanity_score %}highlight{% endif %}">
+                    <img src="{{ url_for('static', filename='images/' + img + '.png') }}" alt="{{ label }}">
                     <strong>{{ num }} - {{ label }}</strong>
                     <p>{{ desc }}</p>
                 </div>
@@ -50,15 +49,17 @@
             </div>
         </div>
 
+        <a href="{{ url_for('index') }}" class="back-button">Evaluate Another Comment</a>
+
         <div class="footer-note">
             Make social media better with TrueFace | "Reveal the Real" GO: <a href="https://truefaceworld.com">TrueFaceWorld.com</a>
         </div>
 
         <div class="social-icons">
-            <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://twitter.com" target="_blank"><i class="fab fa-x-twitter"></i></a>
-            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://facebook.com/TrueFaceWorld" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://x.com/TrueFaceWorld" target="_blank" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://instagram.com/TrueFaceWorld" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://linkedin.com/company/TrueFaceWorld" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
         </div>
     </div>
 </body>
