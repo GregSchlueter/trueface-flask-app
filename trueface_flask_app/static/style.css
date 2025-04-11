@@ -1,98 +1,92 @@
 body {
-    font-family: Arial, sans-serif;
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 40px;
-    background-color: #f9f9f9;
+  font-family: Arial, sans-serif;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px;
+  background-color: #f9f9f9;
 }
 
 .logo {
-    width: 400px;
-    margin: 0 auto 20px;
-    display: block;
+  width: 400px;
+  display: block;
+  margin: 0 auto 20px;
 }
 
 h2 {
-    margin-top: 30px;
+  margin-top: 30px;
 }
 
 .score-block {
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 16px;
-    margin-bottom: 20px;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 16px;
+  margin-bottom: 20px;
 }
 
 .humanity-scale {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-    margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  margin: 20px 0;
 }
 
 .humanity-item {
-    width: 110px;
-    text-align: center;
-    font-size: 0.85em;
-    color: #333;
+  width: 100px;
+  text-align: center;
+  font-size: 0.9em;
 }
 
 .humanity-item img {
-    width: 60px;
-    height: auto;
-    margin-bottom: 4px;
+  width: 50px;
+  height: auto;
+  margin-bottom: 5px;
 }
 
 .comment-box {
-    background-color: #eef;
-    padding: 12px;
-    border-left: 5px solid #88f;
-    font-style: italic;
-    text-align: left;
+  background-color: #eef;
+  padding: 12px;
+  border-left: 5px solid #88f;
+  font-style: italic;
+  text-align: left;
 }
 
-.evaluation-block {
-    text-align: left;
-    padding-left: 10px;
-    margin-bottom: 18px;
+.category-description {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.score-heading {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.score-heading img {
+  height: 24px;
+  width: auto;
 }
 
 .footer-note {
-    text-align: center;
-    font-weight: bold;
-    margin-top: 30px;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 20px;
 }
 
 .social-icons {
-    display: flex;
-    justify-content: center;
-    margin-top: 30px;
-    gap: 25px;
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+  gap: 20px;
 }
 
 .social-icons a {
-    color: #333;
-    font-size: 22px;
-    transition: color 0.3s;
+  color: #333;
+  font-size: 22px;
+  transition: color 0.3s;
 }
 
 .social-icons a:hover {
-    color: #0077b5;
+  color: #0077b5;
 }
-
-.category-icon {
-    font-size: 20px;
-    margin-right: 6px;
-}
-
-.category-score {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.final-summary-icon {
-    width: 22px;
-    height: auto;
-    vertical-align: middle
