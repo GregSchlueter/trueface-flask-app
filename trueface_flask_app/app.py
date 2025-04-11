@@ -1,82 +1,76 @@
 import os
-from flask import Flask, render_template, request
-from openai import OpenAI
+import json
+import openai
+from flask import Flask, request, render_template
 
 app = Flask(__name__)
 
-client = OpenAI()
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-# Humanity scale mapping (icon, label, description)
-humanity_scale = {
-    0: ("0_cave_echo.png", "Cave Echo", "Grunts in the dark. No light, no lift."),
-    1: ("1_torch_waver.png", "Torch Waver", "Throws light, but mostly heat."),
-    2: ("2_tribal_shouter.png", "Tribal Shouter", "Chants, but doesn’t check facts."),
-    3: ("3_debater.png", "Debater", "Sharp, fair fight. Not always aware."),
-    4: ("4_bridge_builder.png", "Bridge Builder", "Listens hard. Connects dots and people."),
-    5: ("5_fully_alive.png", "Fully Alive", "Truth in love. Humanity wins.")
-}
-
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
-@app.route('/evaluate', methods=['POST'])
+@app.route("/evaluate", methods=["POST"])
 def evaluate():
-    comment = request.form['comment']
-    context = request.form.get('context', '')
+    comment = request.form["comment"]
+    context = request.form.get("context", "")
+
+    messages = [
+        {
+            "role": "user",
+            "content": f"""Evaluate the following comment in context:
+
+CONTEXT: {context}
+COMMENT: {comment}
+
+Return a JSON object with two keys:
+- 'evaluations': maps each of the 5 criteria to a short paragraph.
+- 'scores': maps each of the same criteria to an integer score (0 to 5).
+
+The criteria are:
+1. Emotional Proportion
+2. Personal Attribution
+3. Cognitive Openness
+4. Moral Posture
+5. Interpretive Complexity
+
+Do not include any extra text or notes, only the JSON object.
+"""
+        }
+    ]
 
     try:
-        response = client.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are an AI trained to evaluate public comments."},
-                {"role": "user", "content": f"Evaluate the following comment in context:
-Context: {context}
-Comment: {comment}"}
-            ]
+            messages=messages,
+            temperature=0.4,
         )
-        content = response.choices[0].message.content
+        data = json.loads(response.choices[0].message["content"])
+        scores = data["scores"]
+        total_score = sum(scores.values())
 
-        # Parse scores (simulate expected format)
-        lines = content.split('\n')
-        scores = {}
-        evaluations = {}
-        total_score = 0
+        humanity_scale = {
+            0: ("0_cave_echo", "Cave Echo", "Reactively echoing base impulses"),
+            1: ("1_torch_waver", "Torch Waver", "Carrying outrage without direction"),
+            2: ("2_tribal_shouter", "Tribal Shouter", "Rooted in group-think hostility"),
+            3: ("3_debater", "Debater", "Engaging but still combative"),
+            4: ("4_bridge_builder", "Bridge Builder", "Listening and reasoning with others"),
+            5: ("5_fully_alive", "Fully Alive", "Pursuing truth with wisdom and love")
+        }
 
-        for line in lines:
-            if ':' in line and '/' in line:
-                parts = line.split(':')
-                category = parts[0].strip()
-                score = int(parts[1].strip().split('/')[0])
-                scores[category] = score
-                total_score += score
-            elif category:
-                evaluations[category] = line.strip()
+        return render_template(
+            "result.html",
+            intro="Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, clarity, and human dignity.",
+            comment_excerpt=comment,
+            evaluations=data["evaluations"],
+            scores=scores,
+            total_score=total_score,
+            humanity_scale=humanity_scale,
+        )
 
-        # Determine humanity icon
-        if total_score < 5:
-            humanity_icon = 0
-        elif total_score < 10:
-            humanity_icon = 1
-        elif total_score < 15:
-            humanity_icon = 2
-        elif total_score < 20:
-            humanity_icon = 3
-        elif total_score < 25:
-            humanity_icon = 4
-        else:
-            humanity_icon = 5
-
-        return render_template("result.html",
-                               intro="Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, and human dignity.",
-                               comment_excerpt=comment,
-                               scores=scores,
-                               evaluations=evaluations,
-                               total_score=total_score,
-                               humanity_icon=humanity_icon,
-                               humanity_scale=humanity_scale)
     except Exception as e:
-        print("ERROR:", e)
+        print("ERROR:", str(e))
         return render_template("result.html", intro="There was an error processing your evaluation.", comment_excerpt=comment)
 
 if __name__ == "__main__":
