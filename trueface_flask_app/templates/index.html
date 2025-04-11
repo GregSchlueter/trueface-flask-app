@@ -1,53 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>TrueFace 3.0 - Reveal the Real</title>
-  <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta charset="UTF-8">
+    <title>TrueFace 3.0 - Reveal the Real</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <div class="container">
-    <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" class="logo" alt="TrueFace 3.0 Logo" aria-label="TrueFace 3.0 Logo">
-    <h1>TrueFace 3.0</h1>
-    <div class="intro">
-      TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.
+    <div class="container">
+        <img src="{{ url_for('static', filename='images/TrueFace3.png') }}" class="logo" alt="TrueFace 3.0 Logo" aria-label="TrueFace 3.0 Logo">
+        <h1>TrueFace 3.0</h1>
+        <div class="intro">
+            TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.
+        </div>
+
+        <form method="POST" action="{{ url_for('index') }}" id="commentForm">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                <label for="comment">Your Comment</label>
+                {{ form.comment(rows=5, placeholder="Paste your comment here...", class="textarea", id="comment") }}
+                <span class="char-count">0/1000</span>
+            </div>
+            <div class="form-group">
+                <label for="context">(Optional) Context</label>
+                {{ form.context(rows=3, placeholder="Add context for the comment...", class="textarea", id="context") }}
+                <span class="char-count">0/1000</span>
+            </div>
+            {{ form.submit(id="submitBtn", class="submit-button") }}
+        </form>
+
+        <div class="footer-note">
+            Make Social Media Better with TrueFace | "Reveal the Real" GO: <a href="https://truefaceworld.com">TrueFaceWorld.com</a>
+        </div>
+        <div class="social-icons">
+            <a href="https://facebook.com/TrueFaceWorld" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://x.com/TrueFaceWorld" target="_blank" aria-label="X"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://instagram.com/TrueFaceWorld" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://linkedin.com/company/TrueFaceWorld" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+        </div>
     </div>
 
-    <form method="POST" action="{{ url_for('index') }}" id="commentForm">
-      {{ form.hidden_tag() }}
-      {{ form.comment(rows=5, placeholder="Paste your comment here...", class="textarea") }}
-      {{ form.context(rows=3, placeholder="(Optional) Add context for the comment...", class="textarea") }}
-      {{ form.submit(id="submitBtn") }}
-    </form>
+    <script>
+        // Client-side character limit and counter
+        const commentBox = document.querySelector('#comment');
+        const contextBox = document.querySelector('#context');
+        const commentCounter = commentBox.nextElementSibling;
+        const contextCounter = contextBox.nextElementSibling;
 
-    <div class="footer">
-      Want to help us revolutionize social media or explore investment opportunities?<br>
-      <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a>
-      <div class="social-icons">
-        <a href="https://facebook.com/TrueFaceWorld" target="_blank" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
-        <a href="https://x.com/TrueFaceWorld" target="_blank" aria-label="X"><i class="fab fa-x-twitter"></i></a>
-        <a href="https://instagram.com/TrueFaceWorld" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-        <a href="https://linkedin.com/company/TrueFaceWorld" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-      </div>
-    </div>
-  </div>
+        function updateCounter(box, counter) {
+            const count = box.value.length;
+            counter.textContent = `${count}/1000`;
+            if (count > 1000) {
+                box.value = box.value.slice(0, 1000);
+                alert('Input cannot exceed 1000 characters.');
+            }
+        }
 
-  <script>
-    const commentBox = document.querySelector('textarea[name="comment"]');
-    commentBox.addEventListener('input', () => {
-      if (commentBox.value.length > 1000) {
-        commentBox.value = commentBox.value.slice(0, 1000);
-        alert('Comment cannot exceed 1000 characters.');
-      }
-    });
+        commentBox.addEventListener('input', () => updateCounter(commentBox, commentCounter));
+        contextBox.addEventListener('input', () => updateCounter(contextBox, contextCounter));
 
-    document.getElementById('commentForm').addEventListener('submit', () => {
-      const btn = document.getElementById('submitBtn');
-      btn.disabled = true;
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Evaluating...';
-    });
-  </script>
+        // Loading state on form submission
+        document.getElementById('commentForm').addEventListener('submit', () => {
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Evaluating...';
+        });
+    </script>
 </body>
 </html>
