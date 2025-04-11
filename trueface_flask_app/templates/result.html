@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>TrueFace 3.0 Evaluation</title>
     <link rel="icon" href="/static/images/favicon.png" type="image/png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="/static/style.css">
     <style>
         body {
@@ -16,8 +17,13 @@
         }
         .logo {
             width: 400px;
-            margin: 0 auto 20px;
             display: block;
+            margin: 0 auto 10px;
+        }
+        .intro {
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
         }
         .comment-box {
             background-color: #eef;
@@ -25,49 +31,45 @@
             border-left: 5px solid #88f;
             font-style: italic;
             margin-bottom: 30px;
-            text-align: left;
         }
         .score-block {
             background: #fff;
             border: 1px solid #ccc;
-            padding: 16px;
-            margin-bottom: 20px;
-            text-align: left;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .score-block h2 {
+            margin-top: 10px;
         }
         .humanity-scale {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             flex-wrap: wrap;
-            gap: 20px;
-            margin: 20px 0;
             text-align: center;
         }
         .humanity-item {
-            width: 120px;
+            width: 140px;
         }
         .humanity-item img {
-            width: 80px;
+            width: 60px;
             height: auto;
         }
-        .category-icon {
-            width: 20px;
-            vertical-align: middle;
-            margin-right: 8px;
+        .evaluation-category {
+            margin-bottom: 20px;
+            text-align: left;
         }
-        .final-icon {
-            width: 24px;
-            vertical-align: middle;
-            margin-left: 8px;
+        .evaluation-category h3 {
+            margin-bottom: 5px;
         }
         .social-icons {
             display: flex;
             justify-content: center;
-            margin-top: 30px;
             gap: 20px;
+            margin-top: 30px;
         }
         .social-icons a {
+            font-size: 24px;
             color: #333;
-            font-size: 22px;
             transition: color 0.3s;
         }
         .social-icons a:hover {
@@ -82,10 +84,12 @@
 </head>
 <body>
     <img src="/static/images/TrueFace3.png" alt="TrueFace Logo" class="logo">
-    <p><strong>TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.</strong></p>
+    <div class="intro">
+        Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, and human dignity.
+    </div>
 
     <div class="comment-box">
-        <p><strong>Comment:</strong> {{ comment_excerpt }}</p>
+        <strong>Comment:</strong> {{ comment_excerpt }}
     </div>
 
     <div class="score-block">
@@ -103,39 +107,28 @@
 
     <div class="score-block">
         {% for category, score in scores.items() %}
-            <h2>{{ category }}: {{ score }}/5
-                {% if 0 <= score <= 5 %}
-                    <img class="final-icon" src="/static/images/{{ score }}_{{ humanity_scale[score][0].split('_')[1] }}.png">
-                {% endif %}
-            </h2>
-            <p style="text-align: left;">{{ evaluations[category] }}</p>
+        <div class="evaluation-category">
+            <h3>{{ category }}: {{ score }}/5</h3>
+            <p>{{ evaluations[category] }}</p>
+        </div>
         {% endfor %}
+    </div>
 
+    <div class="score-block">
         <h2>🌿 Together We Are Better</h2>
         <p style="text-align: left;">{{ together_we_are_all_stronger }}</p>
 
         <h2>🧾 Final Summary Score: {{ total_score }}/25
-            {% if 0 <= total_score <= 4 %}
-                <img class="final-icon" src="/static/images/1_torch_waver.png">
-            {% elif 5 <= total_score <= 9 %}
-                <img class="final-icon" src="/static/images/2_tribal_shouter.png">
-            {% elif 10 <= total_score <= 14 %}
-                <img class="final-icon" src="/static/images/3_debater.png">
-            {% elif 15 <= total_score <= 19 %}
-                <img class="final-icon" src="/static/images/4_bridge_builder.png">
-            {% else %}
-                <img class="final-icon" src="/static/images/5_fully_alive.png">
-            {% endif %}
+            <img src="/static/images/{{ humanity_icon }}" alt="Humanity Icon" style="width: 24px; vertical-align: middle;">
         </h2>
-
         <p class="footer-note">Make social media better with TrueFace | "Reveal the Real" GO: <a href="https://truefaceworld.com">TrueFaceWorld.com</a></p>
     </div>
 
     <div class="social-icons">
-        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
-        <a href="https://twitter.com" target="_blank"><i class="fab fa-x-twitter"></i></a>
-        <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+        <a href="https://facebook.com"><i class="fab fa-facebook"></i></a>
+        <a href="https://twitter.com"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://instagram.com"><i class="fab fa-instagram"></i></a>
+        <a href="https://linkedin.com"><i class="fab fa-linkedin"></i></a>
     </div>
 </body>
 </html>
