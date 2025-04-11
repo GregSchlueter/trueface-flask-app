@@ -1,7 +1,7 @@
 /* Base styles */
 body {
     font-family: 'Segoe UI', sans-serif;
-    font-size: 1.2em; /* Increased base font size (was ~1em) */
+    font-size: 1.2em;
     background-color: #f2f4f8;
     margin: 0;
     padding: 40px 20px;
@@ -9,33 +9,77 @@ body {
     justify-content: center;
 }
 
-/* Container for all content */
 .container {
     background: #fff;
-    max-width: 900px; /* Slightly wider for better spacing */
+    max-width: 900px;
     width: 100%;
     padding: 40px;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Logo styling */
 .logo {
-    width: 450px; /* Increased from 384px */
+    width: 450px;
     display: block;
     margin: 0 auto 20px;
 }
 
-/* Intro text */
+h1 {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
 .intro {
-    font-size: 1.4em; /* Increased for readability */
+    font-size: 1.4em;
     font-weight: bold;
     color: #0056d2;
     margin-bottom: 30px;
     text-align: center;
 }
 
-/* Comment box */
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    font-size: 1.3em;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.textarea {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2em;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    resize: vertical;
+}
+
+.char-count {
+    font-size: 0.9em;
+    color: #666;
+    display: block;
+    margin-top: 5px;
+}
+
+.submit-button {
+    padding: 12px 24px;
+    font-size: 1.2em;
+    background-color: #002d72;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    background-color: #0056d2;
+}
+
 .comment-box {
     background-color: #eef;
     padding: 16px;
@@ -52,7 +96,6 @@ body {
     font-size: 1.2em;
 }
 
-/* Evaluation section */
 .evaluation-section {
     margin-bottom: 30px;
 }
@@ -68,21 +111,20 @@ body {
 .category-block h3 {
     display: flex;
     align-items: center;
-    font-size: 1.5em; /* Increased */
+    font-size: 1.5em;
     margin-bottom: 10px;
 }
 
 .category-icon {
-    width: 40px; /* Size for category icons */
+    width: 40px;
     height: auto;
     margin-right: 10px;
 }
 
 .category-block p {
-    font-size: 1.2em; /* Increased */
+    font-size: 1.2em;
 }
 
-/* Together section */
 .together-section {
     border-left: 4px solid #28a745;
     padding-left: 15px;
@@ -90,14 +132,13 @@ body {
 }
 
 .together-section h3 {
-    font-size: 1.5em; /* Increased */
+    font-size: 1.5em;
 }
 
 .together-section p {
     font-size: 1.2em;
 }
 
-/* Summary section */
 .summary-section {
     background: #e9ecef;
     padding: 15px;
@@ -107,20 +148,19 @@ body {
 }
 
 .summary-section h3 {
-    font-size: 1.5em; /* Increased */
+    font-size: 1.5em;
 }
 
 .summary-section p {
     font-size: 1.2em;
 }
 
-/* Humanity scale section */
 .humanity-scale-section {
     margin-bottom: 30px;
 }
 
 .humanity-scale-section h2 {
-    font-size: 1.8em; /* Increased */
+    font-size: 1.8em;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -137,7 +177,7 @@ body {
 }
 
 .humanity-item {
-    width: 160px; /* Slightly larger for clarity */
+    width: 160px;
     text-align: center;
     padding: 15px;
     border: 1px solid #ddd;
@@ -155,7 +195,7 @@ body {
 }
 
 .humanity-item p {
-    font-size: 1em; /* Slightly larger */
+    font-size: 1em;
 }
 
 .humanity-item.highlight {
@@ -163,7 +203,6 @@ body {
     border-color: #0056d2;
 }
 
-/* Button group */
 .button-group {
     display: flex;
     justify-content: center;
@@ -187,10 +226,9 @@ body {
     background-color: #0056d2;
 }
 
-/* Footer note */
 .footer-note {
     text-align: center;
-    font-size: 1.5em; /* Increased for prominence */
+    font-size: 1.5em;
     font-weight: bold;
     margin: 30px 0;
     padding: 15px;
@@ -203,43 +241,18 @@ body {
     text-decoration: underline;
 }
 
-/* Social icons */
 .social-icons {
     text-align: center;
     margin-top: 20px;
-    font-size: 1.8em; /* Increased from 1.4em */
+    font-size: 1.8em;
 }
 
 .social-icons a {
-    margin: 0 15px; /* Slightly more spacing */
+    margin: 0 15px;
     color: #333;
     text-decoration: none;
 }
 
 .social-icons a:hover {
     color: #0056d2;
-}
-
-/* Form styles (for index.html compatibility) */
-.textarea {
-    width: 100%;
-    padding: 15px;
-    font-size: 1.2em; /* Match larger font */
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    resize: vertical;
-}
-
-button[type="submit"] {
-    padding: 12px 24px;
-    font-size: 1.2em;
-    background-color: #002d72;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-}
-
-button[type="submit"]:hover {
-    background-color: #0056d2;
 }
