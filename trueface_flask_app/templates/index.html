@@ -30,6 +30,10 @@
             {{ form.submit(id="submitBtn", class="submit-button") }}
         </form>
 
+        <div class="contact-info">
+            Contact with suggestions and for investment opportunities: <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a>
+        </div>
+
         <div class="footer-note">
             Make Social Media Better with TrueFace | "Reveal the Real" GO: <a href="https://truefaceworld.com">TrueFaceWorld.com</a>
         </div>
@@ -42,7 +46,6 @@
     </div>
 
     <script>
-        // Client-side character limit and counter
         const commentBox = document.querySelector('#comment');
         const contextBox = document.querySelector('#context');
         const commentCounter = commentBox.nextElementSibling;
@@ -60,7 +63,6 @@
         commentBox.addEventListener('input', () => updateCounter(commentBox, commentCounter));
         contextBox.addEventListener('input', () => updateCounter(contextBox, contextCounter));
 
-        // Loading state on form submission
         document.getElementById('commentForm').addEventListener('submit', () => {
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
