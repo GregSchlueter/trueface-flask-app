@@ -7,27 +7,23 @@ from flask_wtf import FlaskForm
 from wtforms import TextAreaField, SubmitField
 from wtforms.validators import DataRequired, Length
 from openai import OpenAI, OpenAIError
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
 
-# Initialize Flask app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'your-fallback-secret-key')
 
-# Initialize OpenAI client
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-# Configure logging for Render
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Define form with explicit length validators
 class CommentForm(FlaskForm):
-    comment = TextAreaField('Comment', validators=[DataRequired(), Length(min=1, max=1000, message="Comment must be 1–1000 characters.")])
-    context = TextAreaField('Context', validators=[Length(max=1000, message="Context must be 0–1000 characters.")])
+    comment = TextAreaField('Comment', validators=[DataRequired(), Length(min=1, max=1000)])
+    context = TextAreaField('Context', validators=[Length(max=1000)])
     submit = SubmitField('Evaluate')
 
 @app.route('/', methods=['GET', 'POST'])
@@ -41,20 +37,19 @@ def index():
 
 @app.route('/evaluate', methods=['GET'])
 def evaluate():
-    # Decode and sanitize inputs
-    comment = bleach.clean(request.args.get('comment', ''))
-    context = bleach.clean(request.args.get('context', ''))
+    # Decode URL-encoded inputs before sanitizing
+    comment = bleach.clean(unquote(request.args.get('comment', '')))
+    context = bleach.clean(unquote(request.args.get('context', '')))
 
     if not comment:
         logger.warning("No comment provided for evaluation")
         return render_template("result.html",
                              intro="Error: No comment provided.",
                              comment_excerpt="",
-                             humanity_scale={})  # Empty dict as fallback
+                             humanity_scale={})
 
     logger.info(f"Evaluating comment (first 50 chars): {comment[:50]}...")
 
-    # Define humanity scale (moved outside try block to ensure availability)
     humanity_scale = {
         0: ("0_cave_echo", "Cave Echo", "Trapped in reactive noise, no original thought."),
         1: ("1_torch_waver", "Torch Waver", "Carries passion but fuels fire more than light."),
@@ -65,7 +60,6 @@ def evaluate():
     }
 
     try:
-        # Call OpenAI API with stricter JSON enforcement
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
@@ -94,14 +88,10 @@ def evaluate():
             max_tokens=500
         )
 
-        # Log raw response for debugging
         raw_response = response.choices[0].message.content
         logger.info(f"Raw OpenAI response: {raw_response[:200]}...")
-
-        # Parse JSON response
         data = json.loads(raw_response)
 
-        # Validate response structure
         required_keys = ['scores', 'evaluations', 'together_we_are_all_stronger']
         if not all(key in data for key in required_keys):
             raise ValueError("Invalid response format: missing required keys")
@@ -110,26 +100,21 @@ def evaluate():
         evaluations = data["evaluations"]
         summary = data["together_we_are_all_stronger"]
 
-        # Validate scores
         valid_scores = {}
         for category, score in scores.items():
             try:
                 score_int = int(score)
                 if 0 <= score_int <= 5 and category in evaluations:
                     valid_scores[category] = score_int
-                else:
-                    logger.warning(f"Invalid score for {category}: {score}")
             except (ValueError, TypeError):
                 logger.warning(f"Non-integer score for {category}: {score}")
 
         if not valid_scores:
             raise ValueError("No valid scores provided")
 
-        # Calculate total score
         total_score = sum(valid_scores.values())
         final_humanity_score = min(5, max(0, total_score // len(valid_scores)))
 
-        # Render results
         return render_template(
             "result.html",
             comment_excerpt=comment[:160] + "..." if len(comment) > 160 else comment,
@@ -147,15 +132,15 @@ def evaluate():
         return render_template("result.html",
                              intro=f"OpenAI API error: {str(e)}",
                              comment_excerpt=comment,
-                             humanity_scale=humanity_scale)  # Pass humanity_scale
+                             humanity_scale=humanity_scale)
     
     except json.JSONDecodeError as e:
         logger.error(f"JSON parsing error: {str(e)}. Raw response: {raw_response}")
         return render_template("result.html",
                              intro="Error: Unable to parse evaluation response. Please try again.",
                              comment_excerpt=comment,
-                             humanity_scale=humanity_scale,  # Pass humanity_scale
-                             scores={},  # Fallback for template
+                             humanity_scale=humanity_scale,
+                             scores={},
                              evaluations={},
                              total_score=0,
                              final_humanity_score=0,
@@ -166,14 +151,14 @@ def evaluate():
         return render_template("result.html",
                              intro=f"Error: {str(e)}",
                              comment_excerpt=comment,
-                             humanity_scale=humanity_scale)  # Pass humanity_scale
+                             humanity_scale=humanity_scale)
     
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         return render_template("result.html",
                              intro="Unexpected error occurred during evaluation.",
                              comment_excerpt=comment,
-                             humanity_scale=humanity_scale)  # Pass humanity_scale
+                             humanity_scale=humanity_scale)
 
 if __name__ == "__main__":
     app.run(debug=True)
