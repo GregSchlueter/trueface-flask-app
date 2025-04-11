@@ -1,89 +1,78 @@
-from flask import Flask, render_template, request
-import openai
-import json
 import os
+from flask import Flask, render_template, request
+from openai import OpenAI
 
 app = Flask(__name__)
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-humanity_scale = {
-    0: ["0_cave_echo", "Echoing the loudest voices with no reflection"],
-    1: ["1_torch_waver", "Fired up but not fully focused"],
-    2: ["2_tribal_shouter", "Rooted in a side, but not in truth"],
-    3: ["3_debater", "Ready to think, but still sharp-edged"],
-    4: ["4_bridge_builder", "Seeking truth and building unity"],
-    5: ["5_fully_alive", "Truthful, respectful, and fully human"]
-}
+def analyze_comment(comment, context=""):
+    system_prompt = "You are TrueFace, a nonpartisan AI model designed to promote truth, logic, clarity, and human dignity..."
+    user_prompt = f"Comment: {comment}\nContext: {context}\nEvaluate this..."
 
-@app.route("/")
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt}
+        ],
+        temperature=0.5
+    )
+
+    return response.choices[0].message.content
+
+@app.route('/')
 def index():
-    return render_template("index.html")
+    return render_template('index.html')
 
-@app.route("/evaluate", methods=["POST"])
+@app.route('/evaluate', methods=['POST'])
 def evaluate():
-    comment = request.form.get("comment")
-    context = request.form.get("context", "")
+    comment = request.form['comment']
+    context = request.form.get('context', '')
 
-    prompt = f"""
-You are TrueFace 3.0, an AI model designed to evaluate online comments for their contribution to public conversation. Given the comment and any context, assess the comment on these five dimensions (scored 0–5):
-
-1. Emotional Proportion
-2. Personal Attribution
-3. Cognitive Openness
-4. Moral Posture
-5. Interpretive Complexity
-
-Return JSON with this structure:
-{{
-  "intro": "...",
-  "comment_excerpt": "...",
-  "evaluations": {{
-    "Emotional Proportion": "...",
-    "Personal Attribution": "...",
-    "Cognitive Openness": "...",
-    "Moral Posture": "...",
-    "Interpretive Complexity": "..."
-  }},
-  "scores": {{
-    "Emotional Proportion": 1,
-    "Personal Attribution": 2,
-    "Cognitive Openness": 3,
-    "Moral Posture": 4,
-    "Interpretive Complexity": 5
-  }},
-  "together_we_are_all_stronger": "...",
-  "total_score": 15
-}}
-Context: {context}
-Comment: {comment}
-"""
+    humanity_scale = [
+        ("0_cave_echo", "Echoing the loudest voices with no reflection"),
+        ("1_torch_waver", "Fired up but not fully focused"),
+        ("2_tribal_shouter", "Rooted in a side, but not in truth"),
+        ("3_debater", "Ready to think, but still sharp-edged"),
+        ("4_bridge_builder", "Seeking truth and building unity"),
+        ("5_fully_alive", "Truthful, respectful, and fully human"),
+    ]
 
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}]
-        )
-        ai_response = response.choices[0].message.content.strip()
+        ai_response = analyze_comment(comment, context)
+        data = eval(ai_response.strip())  # Replace with json.loads() if needed
 
-        json_start = ai_response.find('{')
-        json_str = ai_response[json_start:]
-        data = json.loads(json_str)
-
-        # Auto-calculate score if missing
         if isinstance(data, dict) and "total_score" not in data:
-            scores = data.get("scores", {})
-            data["total_score"] = sum(scores.values())
+            data["total_score"] = sum(data.get("scores", {}).values())
 
-        return render_template("result.html", **data, humanity_scale=humanity_scale)
+        humanity_index = min(5, max(0, data["total_score"] // 5))
+
+        return render_template(
+            "result.html",
+            intro="Below is a TrueFace 3.0 evaluation of your comment.",
+            comment_excerpt=comment,
+            evaluations=data.get("evaluations", {}),
+            scores=data.get("scores", {}),
+            total_score=data.get("total_score", 0),
+            humanity_level=humanity_index,
+            humanity_scale=humanity_scale,
+            together_we_are_all_stronger=data.get("together_we_are_all_stronger", "")
+        )
 
     except Exception as e:
-        print("ERROR:", e)
-        return render_template("result.html",
-                               intro="There was an error processing your evaluation.",
-                               comment_excerpt=comment,
-                               evaluations={},
-                               scores={},
-                               together_we_are_all_stronger=str(e),
-                               total_score=0,
-                               humanity_scale=humanity_scale)
+        print("ERROR:", str(e))
+        return render_template(
+            "result.html",
+            intro="There was an error processing your evaluation.",
+            comment_excerpt=comment,
+            humanity_scale=humanity_scale,
+            evaluations={},
+            scores={},
+            total_score=0,
+            humanity_level=0,
+            together_we_are_all_stronger="Something went wrong. Please try again."
+        )
+
+if __name__ == '__main__':
+    app.run(debug=True)
