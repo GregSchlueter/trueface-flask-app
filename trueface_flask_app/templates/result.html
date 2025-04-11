@@ -72,14 +72,13 @@
         </div>
 
         <div class="social-icons">
-            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}&quote=Evaluate%20your%20social%20world%20at%20TrueFaceWorld.com%20%7C%20%22Reveal%20the%20Real%22" target="_blank" aria-label="Share on Facebook"><i class="fas fa-share"></i></a>
-            <a href="https://twitter.com/intent/tweet?url={{ request.url|urlencode }}&text=Evaluate%20your%20social%20world%20at%20TrueFaceWorld.com%20%7C%20%22Reveal%20the%20Real%22" target="_blank" aria-label="Share on X"><i class="fas fa-share"></i></a>
-            <a href="https://www.instagram.com/" target="_blank" aria-label="Instagram (Share not directly supported)"><i class="fas fa-share"></i></a>
-            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.url|urlencode }}&title=Evaluate%20your%20social%20world%20at%20TrueFaceWorld.com%20%7C%20%22Reveal%20the%20Real%22" target="_blank" aria-label="Share on LinkedIn"><i class="fas fa-share"></i></a>
+            <a href="https://facebook.com/TrueFaceWorld" target="_blank" aria-label="Evaluate your social world at TrueFaceWorld.com | 'Reveal the Real' on Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://x.com/TrueFaceWorld" target="_blank" aria-label="Evaluate your social world at TrueFaceWorld.com | 'Reveal the Real' on X"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://instagram.com/TrueFaceWorld" target="_blank" aria-label="Evaluate your social world at TrueFaceWorld.com | 'Reveal the Real' on Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://linkedin.com/company/TrueFaceWorld" target="_blank" aria-label="Evaluate your social world at TrueFaceWorld.com | 'Reveal the Real' on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
         </div>
 
         {% if scores and evaluations %}
-        <!-- Hidden textarea to hold copyable text -->
         <textarea id="copyText" style="display: none;">
 Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, clarity, and human dignity.
 
@@ -99,13 +98,11 @@ Learn more at https://truefaceworld.com
                 const textArea = document.getElementById('copyText');
                 const text = textArea.value;
 
-                // Modern clipboard API
                 if (navigator.clipboard && window.isSecureContext) {
                     navigator.clipboard.writeText(text)
                         .then(() => alert('Results copied to clipboard!'))
                         .catch(() => fallbackCopy(text));
                 } else {
-                    // Fallback for older browsers or non-HTTPS
                     fallbackCopy(text);
                 }
             }
