@@ -181,34 +181,34 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px;
+    gap: 15px; /* Reduced gap for tighter fit */
     background: #fafafa;
-    padding: 20px;
+    padding: 15px;
     border-radius: 8px;
     border: 1px solid #ddd;
 }
 
 .humanity-item {
-    width: 160px;
+    width: 120px; /* Reduced from 160px */
     text-align: center;
-    padding: 15px;
+    padding: 10px; /* Reduced padding */
     border: 1px solid #ddd;
     border-radius: 6px;
     background: #fff;
 }
 
 .humanity-item img {
-    width: 80px;
+    width: 60px; /* Reduced from 80px */
     height: auto;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .humanity-item strong {
-    font-size: 1.2em;
+    font-size: 1.1em; /* Slightly smaller but readable */
 }
 
 .humanity-item p {
-    font-size: 1em;
+    font-size: 0.9em; /* Smaller but legible */
 }
 
 .humanity-item.highlight {
@@ -283,7 +283,7 @@ h1 {
 }
 
 .social-icons a {
-    margin: 0 20px; /* Increased spacing for share icons */
+    margin: 0 20px;
     color: #333;
     text-decoration: none;
     transition: color 0.3s, transform 0.2s;
@@ -291,5 +291,12 @@ h1 {
 
 .social-icons a:hover {
     color: #0056d2;
-    transform: scale(1.2); /* Slight zoom on hover for compelling effect */
+    transform: scale(1.2);
+}
+
+/* Media query for desktop horizontal layout */
+@media (min-width: 900px) {
+    .humanity-scale {
+        flex-wrap: nowrap; /* Single row on desktop */
+    }
 }
