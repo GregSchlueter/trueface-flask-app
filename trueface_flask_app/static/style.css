@@ -27,20 +27,21 @@ h2 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 16px;
+  gap: 20px;
   margin: 20px 0;
 }
 
 .humanity-item {
-  width: 100px;
+  width: 120px;
   text-align: center;
   font-size: 0.9em;
 }
 
 .humanity-item img {
-  width: 50px;
+  width: 60px;
   height: auto;
-  margin-bottom: 5px;
+  display: block;
+  margin: 0 auto 6px;
 }
 
 .comment-box {
@@ -48,37 +49,37 @@ h2 {
   padding: 12px;
   border-left: 5px solid #88f;
   font-style: italic;
+  margin-bottom: 20px;
   text-align: left;
-}
-
-.category-description {
-  text-align: left;
-  margin-bottom: 10px;
 }
 
 .score-heading {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
+  gap: 12px;
 }
 
 .score-heading img {
-  height: 24px;
-  width: auto;
+  width: 28px;
+  height: auto;
+}
+
+.category-description {
+  margin-top: 10px;
+  text-align: left;
 }
 
 .footer-note {
   text-align: center;
   font-weight: bold;
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 .social-icons {
   display: flex;
   justify-content: center;
-  margin-top: 30px;
   gap: 20px;
+  margin-top: 20px;
 }
 
 .social-icons a {
