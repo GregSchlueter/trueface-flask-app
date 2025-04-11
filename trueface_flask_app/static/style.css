@@ -1,70 +1,102 @@
 
 body {
-    font-family: Arial, sans-serif;
-    max-width: 860px;
-    margin: auto;
-    padding: 40px 20px;
-    background-color: #f9f9f9;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f2f4f8;
+  margin: 0;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
 }
+
+.container {
+  background: #fff;
+  max-width: 850px;
+  width: 100%;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
 .logo {
-    width: 360px;
-    display: block;
-    margin: 0 auto 20px;
+  width: 384px;
+  display: block;
+  margin: 0 auto 20px;
 }
+
 .intro {
-    font-weight: bold;
-    margin-bottom: 20px;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #0056d2;
+  margin-bottom: 30px;
+  text-align: center;
 }
+
 .comment-box {
-    background: #eef;
-    padding: 12px;
-    border-left: 5px solid #88f;
-    margin-bottom: 20px;
-    font-style: italic;
+  background-color: #eef;
+  padding: 16px;
+  border-left: 6px solid #88f;
+  font-style: italic;
+  margin-bottom: 30px;
 }
-.score-block {
-    background: #fff;
-    border: 1px solid #ccc;
-    padding: 16px;
-    margin-bottom: 20px;
+
+.score-section {
+  margin-bottom: 20px;
 }
-.score-block h2 {
-    margin-top: 0;
+
+.score-section h2 {
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
 }
+
+.score-section h2 img {
+  margin-left: 10px;
+  width: 24px;
+  height: auto;
+}
+
+.left-align {
+  text-align: left;
+}
+
 .humanity-scale {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 40px;
 }
-.humanity-block {
-    width: 120px;
-    text-align: center;
+
+.humanity-entry {
+  width: 120px;
+  text-align: center;
 }
-.humanity-block img {
-    width: 60px;
-    height: auto;
+
+.humanity-entry img {
+  width: 60px;
+  height: auto;
 }
-.humanity-number {
-    font-weight: bold;
-    font-size: 1.2em;
+
+.summary {
+  border-top: 2px solid #ccc;
+  padding-top: 20px;
+  margin-top: 30px;
 }
-.final-humanity-icon {
-    width: 80px;
-    display: block;
-    margin: 10px auto;
-}
-.footer-note {
-    text-align: center;
-    font-weight: bold;
-    margin-top: 30px;
-}
+
 .social-icons {
-    text-align: center;
-    font-size: 1.5em;
-    margin-top: 20px;
+  text-align: center;
+  margin-top: 30px;
+  font-size: 1.4em;
 }
+
 .social-icons a {
-    margin: 0 12px;
-    color: #444;
+  margin: 0 12px;
+  color: #333;
+  text-decoration: none;
+}
+
+.footer-note {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 20px;
 }
