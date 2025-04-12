@@ -43,10 +43,10 @@ def evaluate():
     if not comment:
         logger.warning("No comment provided for evaluation")
         return render_template("result.html",
-                             intro="Error: No comment provided.",
-                             comment_excerpt="",
-                             context_excerpt="",
-                             humanity_scale={})
+                              intro="Error: No comment provided.",
+                              comment_excerpt="",
+                              context_excerpt="",
+                              humanity_scale={})
 
     logger.info(f"Evaluating comment (first 50 chars): {comment[:50]}...")
 
@@ -89,62 +89,4 @@ def evaluate():
 
         raw_response = response.choices[0].message.content
         logger.info(f"Raw OpenAI response: {raw_response[:200]}...")
-        cleaned_response = re.sub(r'^```json\n|```$', '', raw_response, flags=re.MULTILINE).strip()
-        data = json.loads(cleaned_response)
-
-        required_keys = ['scores', 'evaluations', 'together_we_are_all_stronger']
-        if not all(key in data for key in required_keys):
-            raise ValueError("Invalid response format: missing required keys")
-
-        scores = data["scores"]
-        evaluations = data["evaluations"]
-        summary = data["together_we_are_all_stronger"]
-
-        valid_scores = {}
-        for category, score in scores.items():
-            try:
-                score_int = int(score)
-                if 0 <= score_int <= 5 and category in evaluations:
-                    valid_scores[category] = score_int
-            except (ValueError, TypeError):
-                logger.warning(f"Non-integer score for {category}: {score}")
-
-        if not valid_scores:
-            raise ValueError("No valid scores provided")
-
-        total_score = sum(valid_scores.values())
-        final_humanity_score = min(5, max(0, total_score // len(valid_scores)))
-
-        return render_template(
-            "result.html",
-            comment_excerpt=comment[:160] + "..." if len(comment) > 160 else comment,
-            context_excerpt=context[:160] + "..." if len(context) > 160 else context,
-            scores=valid_scores,
-            evaluations=evaluations,
-            total_score=total_score,
-            final_humanity_score=final_humanity_score,
-            humanity_scale=humanity_scale,
-            summary=summary,
-            intro="TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity."
-        )
-
-    except OpenAIError as e:
-        logger.error(f"OpenAI API error: {str(e)}")
-        return render_template("result.html",
-                             intro=f"OpenAI API error: {str(e)}",
-                             comment_excerpt=comment,
-                             context_excerpt=context,
-                             humanity_scale=humanity_scale)
-    
-    except json.JSONDecodeError as e:
-        logger.error(f"JSON parsing error: {str(e)}. Raw response: {raw_response}")
-        return render_template("result.html",
-                             intro="Error: Unable to parse evaluation response. Please try again.",
-                             comment_excerpt=comment,
-                             context_excerpt=context,
-                             humanity_scale=humanity_scale,
-                             scores={},
-                             evaluations={},
-                             total_score=0,
-                             final_humanity_score=0,
-                            
+        cleaned_response = re.sub(r'^```json\n|```$', '', raw_response, flags=re.MULT
