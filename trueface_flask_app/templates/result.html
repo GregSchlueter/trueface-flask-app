@@ -37,6 +37,13 @@
             <p>{{ comment_excerpt }}</p>
         </div>
 
+        {% if context_excerpt %}
+        <div class="context-box">
+            <strong>Context:</strong>
+            <p>{{ context_excerpt }}</p>
+        </div>
+        {% endif %}
+
         {% if scores and evaluations %}
         <div class="evaluation-section">
             {% for category, score in scores.items() %}
@@ -85,7 +92,7 @@
 
         {% if scores and evaluations %}
         <textarea id="copyText" style="display: none;">
-Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, clarity, and human dignity.
+Below is a TrueFace 3.0 evaluation of your comment. TrueFace is an AI model designed to promote truth, logic, and human dignity.
 
 Comment: {{ comment_excerpt|e }}
 {% if context_excerpt %}

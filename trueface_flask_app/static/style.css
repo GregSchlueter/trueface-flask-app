@@ -81,7 +81,7 @@ h1 {
     background-color: #0056d2;
 }
 
-.comment-box {
+.comment-box, .context-box {
     background-color: #eef;
     padding: 16px;
     border-left: 6px solid #88f;
@@ -92,13 +92,13 @@ h1 {
     max-width: 100%;
 }
 
-.comment-box strong {
+.comment-box strong, .context-box strong {
     font-size: 1.3em;
     display: block;
     margin-bottom: 5px;
 }
 
-.comment-box p {
+.comment-box p, .context-box p {
     font-size: 1.2em;
     margin: 0;
 }

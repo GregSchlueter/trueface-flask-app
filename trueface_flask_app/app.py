@@ -30,7 +30,6 @@ class CommentForm(FlaskForm):
 def index():
     form = CommentForm()
     if form.validate_on_submit():
-        # Pre-encode comment and context for clean URLs
         comment = quote(form.comment.data, safe='')
         context = quote(form.context.data or '', safe='')
         return redirect(url_for('evaluate', comment=comment, context=context))
@@ -67,18 +66,15 @@ def evaluate():
                 {
                     "role": "system",
                     "content": (
-                        "You are a wise, impartial assistant dedicated to fostering humane, connected discourse in a polarized world. "
+                        "You are a wise, impartial assistant dedicated to fostering humane, connected communities through objective truth and universal values. "
                         "Respond ONLY with a valid JSON object containing three keys: "
-                        "'scores' (a dictionary with categories 'Clarity', 'Empathy', 'Logic', 'Respect', 'Constructiveness' and integer scores 0-5 for the comment only), "
+                        "'scores' (a dictionary with categories 'Clarity', 'Prudence', 'Justice', 'Charity', 'Constructiveness' and integer scores 0-5 for the comment only), "
                         "'evaluations' (a dictionary with the same categories and concise, specific string explanations addressing the comment's content directly, using 'Your comment...' and referencing the context where relevant), "
-                        "and 'together_we_are_all_stronger' (a detailed, inspiring string offering tactful, evidence-based feedback). "
-                        "Evaluate the comment in light of the provided context (e.g., the conversation it responds to), but do not score the context itself. "
-                        "In 'evaluations' and 'together_we_are_all_stronger', explicitly reference the context when it informs the comment’s intent, tone, or impact (e.g., 'Given your context..., your comment...'), noting if it merits scrutiny, understanding, or affirmation. "
-                        "Tie explanations to the comment’s specific claims or tone, reflecting contemporary political, social, and cultural realities (e.g., polarization, media dynamics). "
-                        "For 'together_we_are_all_stronger', address the commenter personally ('Your comment...'); analyze specific claims or assumptions with objective context (e.g., cultural trends, public records); "
-                        "pose constructive questions rooted in psychological and social sciences (e.g., 'Is it fair to dismiss all dialogue?', 'What builds meaningful connection?'); "
-                        "challenge dismissive or divisive attitudes to reduce tribalism; and inspire actionable steps to build bridges, emphasizing truth, mutual understanding, and human dignity. "
-                        "Maintain a tone that is clear, tactful, and encouraging, grounded in logic and goodwill. "
+                        "and 'together_we_are_all_stronger' (a detailed, inspiring string offering evidence-based, virtue-guided feedback). "
+                        "Evaluate the comment in light of the provided context (e.g., the conversation it responds to), but do not score the context itself. Ground assessments in objective, universal values—clarity of thought, prudent judgment, justice toward others, charitable intent, and constructive action—reflecting principles like liberty, rule of law, and human dignity, without relativism or polarizing ideologies. "
+                        "In 'evaluations' and 'together_we_are_all_stronger', explicitly reference the context when it informs the comment’s intent, tone, or impact (e.g., 'Given your context..., your comment...'), noting if it merits scrutiny, understanding, or affirmation. Use hard data (e.g., psychological studies, sociological trends) to support claims where possible, and highlight logical flaws, confirmation bias, or tribalism. "
+                        "For 'together_we_are_all_stronger', address the commenter personally ('Your comment...'); analyze specific claims with objective context (e.g., cultural trends, historical principles); pose questions rooted in classical wisdom (e.g., 'Does this align with justice?', 'What fosters true community?'); challenge divisive attitudes to restore shared purpose; and inspire actionable steps toward truth and connection, emphasizing virtue over subjectivity. "
+                        "Maintain a tone that is clear, tactful, and encouraging, grounded in reason and goodwill. If the comment invokes Christian themes, draw on orthodox Catholic principles accessibly, without explicit religious references unless relevant. "
                         "Do not include text outside the JSON object."
                     )
                 },
@@ -93,7 +89,6 @@ def evaluate():
 
         raw_response = response.choices[0].message.content
         logger.info(f"Raw OpenAI response: {raw_response[:200]}...")
-        # Strip markdown code fences
         cleaned_response = re.sub(r'^```json\n|```$', '', raw_response, flags=re.MULTILINE).strip()
         data = json.loads(cleaned_response)
 
@@ -152,23 +147,4 @@ def evaluate():
                              evaluations={},
                              total_score=0,
                              final_humanity_score=0,
-                             summary="We couldn’t process this comment, but together we can improve.")
-    
-    except ValueError as e:
-        logger.error(f"Validation error: {str(e)}")
-        return render_template("result.html",
-                             intro=f"Error: {str(e)}",
-                             comment_excerpt=comment,
-                             context_excerpt=context,
-                             humanity_scale=humanity_scale)
-    
-    except Exception as e:
-        logger.error(f"Unexpected error: {str(e)}")
-        return render_template("result.html",
-                             intro="Unexpected error occurred during evaluation.",
-                             comment_excerpt=comment,
-                             context_excerpt=context,
-                             humanity_scale=humanity_scale)
-
-if __name__ == "__main__":
-    app.run(debug=True)
+                            
