@@ -73,6 +73,7 @@
             <p>{{ coach }}</p>
         </div>
         {% endif %}
+        {% endif %}
 
         <div class="button-group">
             <a href="{{ url_for('index') }}" class="back-button">Evaluate Another Comment</a>
@@ -121,7 +122,9 @@ Learn more at https://truefaceworld.com
             document.addEventListener('DOMContentLoaded', () => {
                 const evaluationSection = document.querySelector('.evaluation-section');
                 const togetherSection = document.querySelector('.together-section');
-                if (!evaluationSection || !togetherSection) {
+                if (evaluationSection && togetherSection) {
+                    // Content loaded successfully
+                } else {
                     document.querySelector('.intro').textContent = 'Loading evaluation... please wait.';
                 }
             });
@@ -174,7 +177,6 @@ Learn more at https://truefaceworld.com
                 document.body.removeChild(tempInput);
             }
         </script>
-        {% endif %}
     </div>
 </body>
 </html>
