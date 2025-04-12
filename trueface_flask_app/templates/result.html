@@ -66,6 +66,12 @@
             <h3>🧾 Final Summary Score: {{ total_score }}/25</h3>
             <p>Your comment ranks as: {{ humanity_scale[final_humanity_score][1] }} - {{ humanity_scale[final_humanity_score][2] }}</p>
         </div>
+
+        {% if coach %}
+        <div class="coach-section">
+            <h3>🧠 Wise Personal Coach</h3>
+            <p>{{ coach }}</p>
+        </div>
         {% endif %}
 
         <div class="button-group">
@@ -102,6 +108,9 @@ Context: {{ context_excerpt|e }}
 {{ category }}: {{ score }}/5 - {{ evaluations[category]|e|replace('\n', ' ') }}
 {% endfor %}
 Together We Are Better: {{ summary|e|replace('\n', ' ') }} Together we are better.
+{% if coach %}
+Wise Personal Coach: {{ coach|e|replace('\n', ' ') }}
+{% endif %}
 Final Score: {{ total_score }}/25
 Humanity Rank: {{ humanity_scale[final_humanity_score][1]|e }} - {{ humanity_scale[final_humanity_score][2]|e }}
 

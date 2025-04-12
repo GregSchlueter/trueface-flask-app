@@ -166,6 +166,24 @@ h1 {
     font-size: 1.2em;
 }
 
+.coach-section {
+    border-left: 4px solid #ff9800;
+    padding: 10px 15px 10px 20px;
+    margin: 20px 0;
+    background: #fff8e1;
+    border-radius: 0 6px 6px 0;
+}
+
+.coach-section h3 {
+    font-size: 1.4em;
+    margin-bottom: 8px;
+}
+
+.coach-section p {
+    font-size: 1.1em;
+    font-style: italic;
+}
+
 .humanity-scale-section {
     margin-bottom: 40px;
 }
