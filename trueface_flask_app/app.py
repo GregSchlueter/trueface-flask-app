@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import bleach
+import re
 from flask import Flask, request, render_template, url_for, redirect
 from flask_wtf import FlaskForm
 from wtforms import TextAreaField, SubmitField
@@ -44,6 +45,7 @@ def evaluate():
         return render_template("result.html",
                              intro="Error: No comment provided.",
                              comment_excerpt="",
+                             context_excerpt="",
                              humanity_scale={})
 
     logger.info(f"Evaluating comment (first 50 chars): {comment[:50]}...")
@@ -90,7 +92,9 @@ def evaluate():
 
         raw_response = response.choices[0].message.content
         logger.info(f"Raw OpenAI response: {raw_response[:200]}...")
-        data = json.loads(raw_response)
+        # Strip markdown code fences
+        cleaned_response = re.sub(r'^```json\n|```$', '', raw_response, flags=re.MULTILINE).strip()
+        data = json.loads(cleaned_response)
 
         required_keys = ['scores', 'evaluations', 'together_we_are_all_stronger']
         if not all(key in data for key in required_keys):

@@ -37,7 +37,6 @@
 
         <div id="loading-overlay" class="loading-overlay">
             <div class="loader"></div>
-            <p>Evaluating your comment...</p>
         </div>
 
         <div class="contact-info">
@@ -60,6 +59,7 @@
         const contextBox = document.querySelector('#context');
         const commentCounter = commentBox.nextElementSibling;
         const contextCounter = contextBox.nextElementSibling;
+        const loadingOverlay = document.getElementById('loading-overlay');
 
         function updateCounter(box, counter) {
             const count = box.value.length;
@@ -77,7 +77,12 @@
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Evaluating...';
-            document.getElementById('loading-overlay').style.display = 'flex';
+            loadingOverlay.style.display = 'flex';
+        });
+
+        // Hide loader on page load
+        window.addEventListener('load', () => {
+            loadingOverlay.style.display = 'none';
         });
     </script>
 </body>
