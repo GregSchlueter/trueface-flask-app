@@ -47,9 +47,9 @@
             Make Social Media Better with TrueFace | "Reveal the Real" GO: <a href="https://truefaceworld.com">TrueFaceWorld.com</a>
         </div>
         <div class="social-icons">
-            <a href="https://www.facebook.com/sharer/sharer.php?u={{ 'https://truefaceworld.com'|urlencode }}"e={{ 'Evaluate your social world at TrueFaceWorld.com | \'Reveal the Real\''|urlencode }}" target="_blank" aria-label="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://x.com/intent/tweet?url={{ 'https://truefaceworld.com'|urlencode }}&text={{ 'Evaluate your social world at TrueFaceWorld.com | \'Reveal the Real\''|urlencode }}" target="_blank" aria-label="Share on X"><i class="fab fa-x-twitter"></i></a>
-            <a href="https://www.instagram.com/" target="_blank" aria-label="Share manually on Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ 'https://truefaceworld.com'|urlencode }}" target="_blank" aria-label="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://x.com/intent/tweet?text={{ 'Evaluate your social world at TrueFaceWorld.com | \'Reveal the Real\''|urlencode }}&url={{ 'https://truefaceworld.com'|urlencode }}" target="_blank" aria-label="Share on X"><i class="fab fa-x-twitter"></i></a>
+            <a href="#" onclick="copyToInstagram('Evaluate your social world at TrueFaceWorld.com | \'Reveal the Real\''); return false;" aria-label="Copy for Instagram"><i class="fab fa-instagram"></i></a>
             <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ 'https://truefaceworld.com'|urlencode }}&title={{ 'Evaluate your social world at TrueFaceWorld.com | \'Reveal the Real\''|urlencode }}" target="_blank" aria-label="Share on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
         </div>
     </div>
@@ -70,6 +70,29 @@
             }
         }
 
+        function copyToInstagram(text) {
+            const comment = document.getElementById('comment').value;
+            const context = document.getElementById('context').value;
+            let shareText = text;
+            if (comment) {
+                shareText += '\n\nComment: ' + comment;
+            }
+            if (context) {
+                shareText += '\n\nContext: ' + context;
+            }
+            const tempInput = document.createElement('textarea');
+            tempInput.value = shareText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                alert('Text copied! Paste it into Instagram to share.');
+            } catch (err) {
+                alert('Failed to copy. Please copy manually.');
+            }
+            document.body.removeChild(tempInput);
+        }
+
         commentBox.addEventListener('input', () => updateCounter(commentBox, commentCounter));
         contextBox.addEventListener('input', () => updateCounter(contextBox, contextCounter));
 
@@ -80,7 +103,6 @@
             loadingOverlay.style.display = 'flex';
         });
 
-        // Hide loader on page load
         window.addEventListener('load', () => {
             loadingOverlay.style.display = 'none';
         });

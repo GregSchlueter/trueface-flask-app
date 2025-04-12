@@ -30,9 +30,10 @@ class CommentForm(FlaskForm):
 def index():
     form = CommentForm()
     if form.validate_on_submit():
-        return redirect(url_for('evaluate',
-                              comment=quote(form.comment.data),
-                              context=quote(form.context.data or '')))
+        # Pre-encode comment and context for clean URLs
+        comment = quote(form.comment.data, safe='')
+        context = quote(form.context.data or '', safe='')
+        return redirect(url_for('evaluate', comment=comment, context=context))
     return render_template('index.html', form=form)
 
 @app.route('/evaluate', methods=['GET'])
