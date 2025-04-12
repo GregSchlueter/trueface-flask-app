@@ -99,6 +99,14 @@ Learn more at https://truefaceworld.com
         </textarea>
 
         <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const evaluationSection = document.querySelector('.evaluation-section');
+                const togetherSection = document.querySelector('.together-section');
+                if (!evaluationSection || !togetherSection) {
+                    setTimeout(() => window.location.reload(), 1000); // Retry after 1s if content missing
+                }
+            });
+
             function copyResults() {
                 const textArea = document.getElementById('copyText');
                 const text = textArea.value;

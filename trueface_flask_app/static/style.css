@@ -260,59 +260,12 @@ h1 {
 
 .footer-note {
     text-align: center;
-    font-size: 1.5em;
+    font-size: 1.2em;
     font-weight: bold;
     margin: 20px 0 10px;
-    padding: 15px;
+    padding: 10px;
     background: #e6f3ff;
     border-radius: 8px;
     max-width: 100%;
     word-wrap: break-word;
-    overflow-wrap: break-word;
-}
-
-.footer-note a {
-    color: #0056d2;
-    text-decoration: underline;
-}
-
-.social-icons {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 1.8em;
-}
-
-.social-icons a {
-    margin: 0 20px;
-    color: #333;
-    text-decoration: none;
-    transition: color 0.3s, transform 0.2s;
-}
-
-.social-icons a:hover {
-    color: #0056d2;
-    transform: scale(1.2);
-}
-
-/* Media query for desktop horizontal layout */
-@media (min-width: 900px) {
-    .humanity-scale {
-        flex-wrap: nowrap;
-    }
-}
-
-/* Media query for mobile spacing */
-@media (max-width: 600px) {
-    .container {
-        padding: 20px;
-    }
-    .logo {
-        width: 300px;
-    }
-    .humanity-item {
-        width: 100px;
-    }
-    .humanity-scale {
-        gap: 10px;
-    }
-}
+    overflow-wrap: break

@@ -23,17 +23,22 @@
         <form method="POST" action="{{ url_for('index') }}" id="commentForm">
             {{ form.hidden_tag() }}
             <div class="form-group">
-                <label for="comment">Your Comment</label>
+                <label for="comment">Comment to be Evaluated (CTE)</label>
                 {{ form.comment(rows=5, placeholder="Paste your comment here...", class="textarea", id="comment") }}
                 <span class="char-count">0/1000</span>
             </div>
             <div class="form-group">
-                <label for="context">(Optional) Context</label>
-                {{ form.context(rows=3, placeholder="Add context for the comment...", class="textarea", id="context") }}
+                <label for="context">Context (Optional. For instance, copy/paste the comment to which the CTE is replying.)</label>
+                {{ form.context(rows=3, placeholder="Add context for the comment, e.g., the comment it responds to...", class="textarea", id="context") }}
                 <span class="char-count">0/1000</span>
             </div>
             {{ form.submit(id="submitBtn", class="submit-button") }}
         </form>
+
+        <div id="loading-overlay" class="loading-overlay">
+            <div class="loader"></div>
+            <p>Evaluating your comment...</p>
+        </div>
 
         <div class="contact-info">
             Contact with suggestions and for investment opportunities: <a href="mailto:Revolution@TrueFaceWorld.com">Revolution@TrueFaceWorld.com</a>
@@ -72,6 +77,7 @@
             const btn = document.getElementById('submitBtn');
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Evaluating...';
+            document.getElementById('loading-overlay').style.display = 'flex';
         });
     </script>
 </body>
