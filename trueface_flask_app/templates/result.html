@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>TrueFace 3.0 Evaluation</title>
+    <meta property="og:title" content="TrueFace 3.0 Evaluation">
+    <meta property="og:description" content="{% if comment_excerpt %}Comment: {{ comment_excerpt|truncate(100)|e }} | Evaluate at TrueFaceWorld.com{% else %}Evaluate your social world at TrueFaceWorld.com | 'Reveal the Real'{% endif %}">
+    <meta property="og:image" content="{{ url_for('static', filename='images/TrueFace3.png') }}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:type" content="article">
     <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
@@ -72,10 +77,10 @@
         </div>
 
         <div class="social-icons">
-            <a href="https://facebook.com/TrueFaceWorld" target="_blank" aria-label="Evaluate your social world at TrueFaceWorld.com | 'Reveal the Real' on Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://x.com/TrueFaceWorld" target="_blank" aria-label="Evaluate your social world at TrueFaceWorld.com | 'Reveal the Real' on X"><i class="fab fa-x-twitter"></i></a>
-            <a href="https://instagram.com/TrueFaceWorld" target="_blank" aria-label="Evaluate your social world at TrueFaceWorld.com | 'Reveal the Real' on Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://linkedin.com/company/TrueFaceWorld" target="_blank" aria-label="Evaluate your social world at TrueFaceWorld.com | 'Reveal the Real' on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url|urlencode }}"e={{ 'Evaluate your social world at TrueFaceWorld.com | \'Reveal the Real\''|urlencode }}" target="_blank" aria-label="Share on Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://x.com/intent/tweet?url={{ request.url|urlencode }}&text={{ 'Evaluate your social world at TrueFaceWorld.com | \'Reveal the Real\''|urlencode }}" target="_blank" aria-label="Share on X"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://www.instagram.com/" target="_blank" aria-label="Share manually on Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.url|urlencode }}&title={{ 'Evaluate your social world at TrueFaceWorld.com | \'Reveal the Real\''|urlencode }}" target="_blank" aria-label="Share on LinkedIn"><i class="fab fa-linkedin-in"></i></a>
         </div>
 
         {% if scores and evaluations %}

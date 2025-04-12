@@ -181,7 +181,7 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 15px; /* Reduced gap for tighter fit */
+    gap: 15px;
     background: #fafafa;
     padding: 15px;
     border-radius: 8px;
@@ -189,26 +189,26 @@ h1 {
 }
 
 .humanity-item {
-    width: 120px; /* Reduced from 160px */
+    width: 120px;
     text-align: center;
-    padding: 10px; /* Reduced padding */
+    padding: 10px;
     border: 1px solid #ddd;
     border-radius: 6px;
     background: #fff;
 }
 
 .humanity-item img {
-    width: 60px; /* Reduced from 80px */
+    width: 60px;
     height: auto;
     margin-bottom: 8px;
 }
 
 .humanity-item strong {
-    font-size: 1.1em; /* Slightly smaller but readable */
+    font-size: 1.1em;
 }
 
 .humanity-item p {
-    font-size: 0.9em; /* Smaller but legible */
+    font-size: 0.9em;
 }
 
 .humanity-item.highlight {
@@ -297,6 +297,22 @@ h1 {
 /* Media query for desktop horizontal layout */
 @media (min-width: 900px) {
     .humanity-scale {
-        flex-wrap: nowrap; /* Single row on desktop */
+        flex-wrap: nowrap;
+    }
+}
+
+/* Media query for mobile spacing */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+    }
+    .logo {
+        width: 300px;
+    }
+    .humanity-item {
+        width: 100px;
+    }
+    .humanity-scale {
+        gap: 10px;
     }
 }
