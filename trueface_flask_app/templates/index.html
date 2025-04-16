@@ -60,6 +60,8 @@
         const commentCounter = commentBox.nextElementSibling;
         const contextCounter = contextBox.nextElementSibling;
         const loadingOverlay = document.getElementById('loading-overlay');
+        const form = document.getElementById('commentForm');
+        const submitBtn = document.getElementById('submitBtn');
 
         function updateCounter(box, counter) {
             const count = box.value.length;
@@ -96,15 +98,16 @@
         commentBox.addEventListener('input', () => updateCounter(commentBox, commentCounter));
         contextBox.addEventListener('input', () => updateCounter(contextBox, contextCounter));
 
-        document.getElementById('commentForm').addEventListener('submit', () => {
-            const btn = document.getElementById('submitBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Evaluating...';
+        form.addEventListener('submit', (event) => {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Evaluating...';
             loadingOverlay.style.display = 'flex';
         });
 
         window.addEventListener('load', () => {
             loadingOverlay.style.display = 'none';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Evaluate';
         });
     </script>
 </body>
