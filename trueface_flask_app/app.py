@@ -22,18 +22,22 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class CommentForm(FlaskForm):
-    comment = TextAreaField('Comment', validators=[DataRequired(), Length(min=1, max=1000)])
+    comment = TextAreaField('Comment', validators=[DataRequired(message="Comment is required"), Length(min=1, max=1000)])
     context = TextAreaField('Context', validators=[Length(max=1000)])
     submit = SubmitField('Evaluate')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = CommentForm()
-    if request.method == 'POST' and form.validate_on_submit():
-        logger.info("Form validated, redirecting to evaluate")
-        comment = quote(form.comment.data.strip(), safe='')
-        context = quote(form.context.data.strip() if form.context.data else '', safe='')
-        return redirect(url_for('evaluate', comment=comment, context=context))
+    if request.method == 'POST':
+        logger.info(f"Received POST request, form data: {form.data}")
+        if form.validate_on_submit():
+            logger.info("Form validated, redirecting to evaluate")
+            comment = quote(form.comment.data.strip(), safe='')
+            context = quote(form.context.data.strip() if form.context.data else '', safe='')
+            return redirect(url_for('evaluate', comment=comment, context=context))
+        else:
+            logger.warning(f"Form validation failed, errors: {form.errors}")
     return render_template('index.html', form=form)
 
 @app.route('/evaluate', methods=['GET'])

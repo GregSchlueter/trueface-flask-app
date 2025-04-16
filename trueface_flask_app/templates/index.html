@@ -25,6 +25,9 @@
             <div class="form-group">
                 <label for="comment">Comment to be Evaluated (CTE)</label>
                 {{ form.comment(rows=5, placeholder="Paste your comment here...", class="textarea", id="comment") }}
+                {% if form.comment.errors %}
+                    <span class="error">{{ form.comment.errors[0] }}</span>
+                {% endif %}
                 <span class="char-count">0/1000</span>
             </div>
             <div class="form-group">
@@ -54,6 +57,15 @@
         </div>
     </div>
 
+    <style>
+        .error {
+            color: red;
+            font-size: 0.9em;
+            display: block;
+            margin-top: 5px;
+        }
+    </style>
+
     <script>
         const commentBox = document.querySelector('#comment');
         const contextBox = document.querySelector('#context');
@@ -73,42 +85,10 @@
         }
 
         function copyToInstagram(text) {
-            const comment = document.getElementById('comment').value;
-            const context = document.getElementById('context').value;
+            const comment = commentBox.value;
+            const context = contextBox.value;
             let shareText = text;
             if (comment) {
                 shareText += '\n\nComment: ' + comment;
             }
-            if (context) {
-                shareText += '\n\nContext: ' + context;
-            }
-            const tempInput = document.createElement('textarea');
-            tempInput.value = shareText;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            try {
-                document.execCommand('copy');
-                alert('Text copied! Paste it into Instagram to share.');
-            } catch (err) {
-                alert('Failed to copy. Please copy manually.');
-            }
-            document.body.removeChild(tempInput);
-        }
-
-        commentBox.addEventListener('input', () => updateCounter(commentBox, commentCounter));
-        contextBox.addEventListener('input', () => updateCounter(contextBox, contextCounter));
-
-        form.addEventListener('submit', (event) => {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Evaluating...';
-            loadingOverlay.style.display = 'flex';
-        });
-
-        window.addEventListener('load', () => {
-            loadingOverlay.style.display = 'none';
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Evaluate';
-        });
-    </script>
-</body>
-</html>
+            if (context
