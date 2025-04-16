@@ -20,20 +20,27 @@
             TrueFace is a nonpartisan AI model built to elevate public conversation through truth, logic, and human dignity.
         </div>
 
-        <form method="POST" action="{{ url_for('index') }}" id="commentForm">
+        <form method="POST" action="{{ url_for('index') }}" id="commentForm" novalidate>
             {{ form.hidden_tag() }}
             <div class="form-group">
                 <label for="comment">Comment to be Evaluated (CTE)</label>
-                {{ form.comment(rows=5, placeholder="Paste your comment here...", class="textarea", id="comment") }}
+                {{ form.comment(rows=5, placeholder="Paste your comment here...", class="textarea", id="comment", maxlength=1000) }}
                 {% if form.comment.errors %}
-                    <span class="error">{{ form.comment.errors[0] }}</span>
+                    {% for error in form.comment.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
                 {% endif %}
-                <span class="char-count">0/1000</span>
+                <span class="char-count" id="comment-count">0/1000</span>
             </div>
             <div class="form-group">
                 <label for="context">Context (Optional, for background)</label>
-                {{ form.context(rows=3, placeholder="Briefly describe the post or discussion this addresses", class="textarea", id="context") }}
-                <span class="char-count">0/1000</span>
+                {{ form.context(rows=3, placeholder="Briefly describe the post or discussion this addresses", class="textarea", id="context", maxlength=1000) }}
+                {% if form.context.errors %}
+                    {% for error in form.context.errors %}
+                        <span class="error">{{ error }}</span>
+                    {% endfor %}
+                {% endif %}
+                <span class="char-count" id="context-count">0/1000</span>
             </div>
             {{ form.submit(id="submitBtn", class="submit-button") }}
         </form>
@@ -64,13 +71,67 @@
             display: block;
             margin-top: 5px;
         }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .textarea {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2em;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            resize: vertical;
+        }
+        .char-count {
+            font-size: 0.9em;
+            color: #666;
+            display: block;
+            margin-top: 5px;
+        }
+        .submit-button {
+            padding: 12px 24px;
+            font-size: 1.2em;
+            background-color: #002d72;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .submit-button:hover {
+            background-color: #0056d2;
+        }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #0056d2;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 
     <script>
         const commentBox = document.querySelector('#comment');
         const contextBox = document.querySelector('#context');
-        const commentCounter = commentBox.nextElementSibling;
-        const contextCounter = contextBox.nextElementSibling;
+        const commentCounter = document.querySelector('#comment-count');
+        const contextCounter = document.querySelector('#context-count');
         const loadingOverlay = document.getElementById('loading-overlay');
         const form = document.getElementById('commentForm');
         const submitBtn = document.getElementById('submitBtn');
@@ -80,6 +141,7 @@
             counter.textContent = `${count}/1000`;
             if (count > 1000) {
                 box.value = box.value.slice(0, 1000);
+                counter.textContent = '1000/1000';
                 alert('Input cannot exceed 1000 characters.');
             }
         }
@@ -91,4 +153,38 @@
             if (comment) {
                 shareText += '\n\nComment: ' + comment;
             }
-            if (context
+            if (context) {
+                shareText += '\n\nContext: ' + context;
+            }
+            const tempInput = document.createElement('textarea');
+            tempInput.value = shareText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                alert('Text copied! Paste it into Instagram to share.');
+            } catch (err) {
+                alert('Failed to copy. Please copy manually.');
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        commentBox.addEventListener('input', () => updateCounter(commentBox, commentCounter));
+        contextBox.addEventListener('input', () => updateCounter(contextBox, contextCounter));
+
+        form.addEventListener('submit', () => {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Evaluating...';
+            loadingOverlay.style.display = 'flex';
+        });
+
+        window.addEventListener('load', () => {
+            loadingOverlay.style.display = 'none';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'Evaluate';
+            updateCounter(commentBox, commentCounter);
+            updateCounter(contextBox, contextCounter);
+        });
+    </script>
+</body>
+</html>
